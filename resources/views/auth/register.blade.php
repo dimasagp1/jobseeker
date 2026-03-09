@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-5">
-        <h2 class="fw-bold text-dark mb-2">Mulai Karir Anda 🚀</h2>
-        <p class="text-secondary">Buat akun baru untuk melamar pekerjaan atau merekrut talenta.</p>
+        <h2 class="fw-bold text-dark mb-2">{{ $siteSettings?->register_title ?? 'Mulai Karir Anda 🚀' }}</h2>
+        <p class="text-secondary">{{ $siteSettings?->register_description ?? 'Buat akun baru untuk melamar pekerjaan atau merekrut talenta.' }}</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}">

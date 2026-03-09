@@ -216,6 +216,45 @@
                                                value="{{ old('hero_cta_text', $company->hero_cta_text) }}">
                                     </div>
                                 </div>
+
+                                <div class="bg-light p-4 rounded border mt-4">
+                                    <h6 class="fw-bold mb-3">Halaman Autentikasi & Register</h6>
+
+                                    <div class="form-group mb-3">
+                                        <label class="form-label-custom">Judul Halaman Register</label>
+                                        <input type="text" name="register_title" class="form-control input-style bg-white" 
+                                               value="{{ old('register_title', $company->register_title) }}" placeholder="Contoh: Mulai Karir Anda 🚀">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label-custom">Deskripsi Halaman Register</label>
+                                        <textarea name="register_description" class="form-control input-style bg-white" rows="2" placeholder="Teks kecil di bawah judul">{{ old('register_description', $company->register_description) }}</textarea>
+                                    </div>
+
+                                    <hr class="my-4 border-secondary opacity-25">
+
+                                    <h6 class="fw-bold mb-3">Banner Samping (Guest Layout)</h6>
+                                    
+                                    <div class="form-group mb-3">
+                                        <label class="form-label-custom">Gambar Banner</label>
+                                        <div class="mb-2">
+                                            <div class="img-preview-box w-100 p-0" style="height: 140px;">
+                                                <img id="guestBannerPreview" src="{{ $company->guest_banner_image ? asset('storage/' . $company->guest_banner_image) : 'https://placehold.co/600x300?text=Banner+Image' }}" 
+                                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                            </div>
+                                        </div>
+                                        <input type="file" id="guestBannerInput" name="guest_banner_image" class="form-control-file border p-1 rounded bg-white w-100" accept="image/*">
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label class="form-label-custom">Judul Banner</label>
+                                        <input type="text" name="guest_banner_title" class="form-control input-style bg-white" 
+                                               value="{{ old('guest_banner_title', $company->guest_banner_title) }}" placeholder="Bawaan: Nama Perusahaan">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label-custom">Deskripsi Banner</label>
+                                        <textarea name="guest_banner_description" class="form-control input-style bg-white" rows="3" placeholder="Teks deskripsi singkat di banner...">{{ old('guest_banner_description', $company->guest_banner_description) }}</textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -256,6 +295,7 @@
         setupImagePreview('logoInput', 'logoPreview');
         setupImagePreview('faviconInput', 'faviconPreview');
         setupImagePreview('heroInput', 'heroPreview');
+        setupImagePreview('guestBannerInput', 'guestBannerPreview');
     });
 </script>
 @endpush

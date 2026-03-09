@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $company->company_name ?? config('app.name', 'JobPortal') }}</title>
+    <title>{{ $siteSettings?->company_name ?? config('app.name', 'JobPortal') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -17,8 +17,8 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <link href="{{ asset('css/futuristic.css') }}" rel="stylesheet">
     
-    @if(isset($company->favicon) && $company->favicon)
-        <link rel="icon" href="{{ asset('storage/' . $company->favicon) }}" type="image/x-icon"/>
+    @if(isset($siteSettings->favicon) && $siteSettings->favicon)
+        <link rel="icon" href="{{ asset('storage/' . $siteSettings->favicon) }}" type="image/x-icon"/>
     @endif
 
     <style>
@@ -46,6 +46,11 @@
             filter: blur(80px);
             border-radius: 50%;
         }
+        @if(isset($siteSettings->guest_banner_image) && $siteSettings->guest_banner_image)
+        .auth-split-screen .auth-banner {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%), url('{{ asset('storage/' . $siteSettings->guest_banner_image) }}') center/cover no-repeat !important;
+        }
+        @endif
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -87,22 +92,22 @@
         <!-- Left Side - Banner -->
         <div class="col-lg-6 d-none d-lg-flex flex-column justify-content-center align-items-center text-white auth-banner p-5">
             <div class="position-relative z-1 text-center" style="max-width: 500px;">
-                @if(isset($company->company_logo) && $company->company_logo)
-                    <img src="{{ asset('storage/' . $company->company_logo) }}" alt="Logo" class="mb-4 rounded-3 shadow-lg" style="height: 80px; width: auto;">
+                @if(isset($siteSettings->company_logo) && $siteSettings->company_logo)
+                    <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" class="mb-4 rounded-3 shadow-lg" style="height: 80px; width: auto;">
                 @else
                     <div class="mb-4 d-inline-block p-3 rounded-circle bg-white bg-opacity-10 backdrop-blur">
                         <i class="fas fa-cube fa-3x text-white"></i>
                     </div>
                 @endif
                 
-                <h1 class="display-4 fw-bold mb-3">{{ $company->company_name ?? 'JobPortal' }}</h1>
-                <p class="lead text-white-50 mb-4">Platform pencarian kerja masa depan. Temukan karir impian Anda atau rekrut talenta terbaik bersama kami.</p>
+                <h1 class="display-4 fw-bold mb-3">{{ $siteSettings?->guest_banner_title ?? ($siteSettings?->company_name ?? 'JobPortal') }}</h1>
+                <p class="lead text-white-50 mb-4">{{ $siteSettings?->guest_banner_description ?? 'Platform pencarian kerja masa depan. Temukan karir impian Anda atau rekrut talenta terbaik bersama kami.' }}</p>
                 
 
             </div>
             
             <div class="position-absolute bottom-0 start-0 p-4 w-100 text-center">
-                <small class="text-white-50">&copy; {{ date('Y') }} {{ $company->company_name ?? 'JobPortal' }}. All rights reserved.</small>
+                <small class="text-white-50">&copy; {{ date('Y') }} {{ $siteSettings?->company_name ?? 'JobPortal' }}. All rights reserved.</small>
             </div>
         </div>
 
@@ -112,8 +117,8 @@
                 <!-- Mobile Logo -->
                 <div class="d-lg-none text-center mb-4">
                     <a href="/" class="d-inline-block text-decoration-none">
-                         @if(isset($company->company_logo) && $company->company_logo)
-                            <img src="{{ asset('storage/' . $company->company_logo) }}" alt="Logo" style="height: 50px;">
+                         @if(isset($siteSettings->company_logo) && $siteSettings->company_logo)
+                            <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" style="height: 50px;">
                         @else
                             <i class="fas fa-briefcase fa-2x text-primary"></i>
                         @endif

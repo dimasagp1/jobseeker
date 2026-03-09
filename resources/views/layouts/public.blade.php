@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'JobPortal')</title>
+    <title>@yield('title', $siteSettings?->company_name ?? 'JobPortal')</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <link href="{{ asset('css/futuristic.css') }}" rel="stylesheet">
-    @if(isset($company->favicon) && $company->favicon)
-        <link rel="icon" href="{{ asset('storage/' . $company->favicon) }}" type="image/x-icon"/>
+    @if(isset($siteSettings->favicon) && $siteSettings->favicon)
+        <link rel="icon" href="{{ asset('storage/' . $siteSettings->favicon) }}" type="image/x-icon"/>
     @endif
     @stack('styles')
 </head>

@@ -1,12 +1,12 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="z-index: 1050;">
     <div class="container">
         <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url('/') }}">
-            @if(isset($company->company_logo) && $company->company_logo)
-                <img src="{{ asset('storage/' . $company->company_logo) }}" alt="Logo" class="me-2 rounded-circle" style="width: 35px; height: 35px;">
+            @if(isset($siteSettings->company_logo) && $siteSettings->company_logo)
+                <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" class="me-2 rounded-circle" style="width: 35px; height: 35px;">
             @else
                 <i class="fas fa-briefcase me-2"></i>
             @endif
-            {{ $company->company_name ?? 'JobPortal' }}
+            {{ $siteSettings?->company_name ?? 'JobPortal' }}
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
             <span class="navbar-toggler-icon"></span>

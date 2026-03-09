@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="mb-5">
-        <h2 class="fw-bold text-dark mb-2">Selamat Datang Kembali! 👋</h2>
-        <p class="text-secondary">Silakan masuk untuk melanjutkan ke dashboard Anda.</p>
+        <h2 class="fw-bold text-dark mb-2">{{ $siteSettings?->register_title ?? 'Selamat Datang Kembali! 👋' }}</h2>
+        <p class="text-secondary">{{ $siteSettings?->register_description ?? 'Silakan masuk untuk melanjutkan ke dashboard Anda.' }}</p>
     </div>
 
     <!-- Session Status -->

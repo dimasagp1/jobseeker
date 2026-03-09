@@ -43,6 +43,11 @@ class SettingController extends Controller
             'hero_description'    => 'nullable|string',
             'hero_image'          => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'hero_cta_text'       => 'nullable|string|max:50',
+            'register_title'      => 'nullable|string|max:255',
+            'register_description'=> 'nullable|string',
+            'guest_banner_title'  => 'nullable|string|max:255',
+            'guest_banner_description' => 'nullable|string',
+            'guest_banner_image'  => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'industry'            => 'nullable|string|max:255',
             'company_size'        => 'nullable|integer|min:1',
             'company_website'     => 'nullable|url|max:255',
@@ -67,6 +72,13 @@ class SettingController extends Controller
                 Storage::disk('public')->delete($company->hero_image);
             }
             $validated['hero_image'] = $request->file('hero_image')->store('company/hero', 'public');
+        }
+
+        if ($request->hasFile('guest_banner_image')) {
+            if ($company->guest_banner_image) {
+                Storage::disk('public')->delete($company->guest_banner_image);
+            }
+            $validated['guest_banner_image'] = $request->file('guest_banner_image')->store('company/auth', 'public');
         }
 
         $company->update($validated);

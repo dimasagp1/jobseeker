@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $company->company_name ?? 'HerbaTech' }} - Career Portal</title>
+    <title>{{ $siteSettings?->company_name ?? 'HerbaTech' }} - Career Portal</title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -71,12 +71,12 @@
     <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('seeker.dashboard') }}">
-                @if(isset($company) && $company && $company->company_logo)
-                    <img src="{{ asset('storage/' . $company->company_logo) }}" alt="Logo" class="me-2 rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                @if(isset($siteSettings) && $siteSettings && $siteSettings->company_logo)
+                    <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" class="me-2 rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
                 @else
                     <i class="fas fa-briefcase me-2 text-primary"></i>
                 @endif
-                {{ $company->company_name ?? 'Job Portal Herbatech' }}
+                {{ $siteSettings?->company_name ?? 'Job Portal Herbatech' }}
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -154,11 +154,11 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 mb-3 mb-md-0 text-center text-md-start">
-                    <h5 class="fw-bold mb-1">{{ $company?->company_name ?? 'Job Portal Herbatech' }}</h5>
-                    <p class="small text-white-50 mb-0">{{ Str::limit($company?->company_description ?? 'Sistem rekrutmen terintegrasi.', 100) }}</p>
+                    <h5 class="fw-bold mb-1">{{ $siteSettings?->company_name ?? 'Job Portal Herbatech' }}</h5>
+                    <p class="small text-white-50 mb-0">{{ Str::limit($siteSettings?->company_description ?? 'Sistem rekrutmen terintegrasi.', 100) }}</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <p class="small text-white-50 mb-0">&copy; {{ date('Y') }} {{ $company?->company_name ?? 'Job Portal Herbatech' }}. All rights reserved.</p>
+                    <p class="small text-white-50 mb-0">&copy; {{ date('Y') }} {{ $siteSettings?->company_name ?? 'Job Portal Herbatech' }}. All rights reserved.</p>
                 </div>
             </div>
         </div>
