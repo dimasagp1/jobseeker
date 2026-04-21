@@ -181,8 +181,11 @@
         </div>
 
         @if($categories->hasPages())
-        <div class="card-footer bg-white border-top py-3">
-            {{ $categories->links() }}
+        <div class="card-footer bg-white border-top py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <small class="text-muted mb-0">
+                Menampilkan {{ $categories->firstItem() }}-{{ $categories->lastItem() }} dari {{ $categories->total() }} kategori
+            </small>
+            {{ $categories->onEachSide(1)->links('pagination::bootstrap-5') }}
         </div>
         @endif
     </div>
