@@ -156,4 +156,16 @@ class Job extends Model
     {
         return $this->deadline && $this->deadline->isPast() && !$this->deadline->isToday();
     }
+
+    /**
+     * Otomatis ubah lowongan aktif menjadi closed jika deadline sudah lewat.
+     */
+    public static function closeExpiredJobs(): int
+    {
+        return static::query()
+            ->where('status', 'published')
+            ->whereNotNull('deadline')
+            ->whereDate('deadline', '<', now()->toDateString())
+            ->update(['status' => 'closed']);
+    }
 }

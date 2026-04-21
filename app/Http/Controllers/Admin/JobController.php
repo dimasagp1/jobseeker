@@ -14,6 +14,8 @@ class JobController extends Controller
 {
     public function index(Request $request)
     {
+        Job::closeExpiredJobs();
+
         $query = Job::with(['company', 'category', 'location'])->withCount('applications');
 
         if ($request->filled('search')) {
@@ -81,8 +83,8 @@ class JobController extends Controller
             'description'      => $request->description,
             'requirements'     => $request->requirements,
             'responsibilities' => null, // Dikosongkan karena tidak ada di form baru
-            'salary_min'       => $request->salary_min,
-            'salary_max'       => $request->salary_max,
+            'salary_min'       => $request->filled('salary_min') ? $request->salary_min : null,
+            'salary_max'       => $request->filled('salary_max') ? $request->salary_max : null,
             'salary_type'      => $request->salary_type,
             'salary_currency'  => $request->salary_currency,
             'is_salary_visible' => $request->has('is_salary_visible'),
@@ -144,6 +146,10 @@ class JobController extends Controller
         ]);
 
         $data = $request->all();
+
+        // Pastikan field gaji kosong tetap tersimpan sebagai NULL, bukan string kosong.
+        $data['salary_min'] = $request->filled('salary_min') ? $request->salary_min : null;
+        $data['salary_max'] = $request->filled('salary_max') ? $request->salary_max : null;
 
         if ($job->title !== $request->title) {
             $data['slug'] = Str::slug($request->title) . '-' . time();

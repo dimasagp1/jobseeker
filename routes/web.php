@@ -14,7 +14,8 @@ require __DIR__ . '/auth.php';
 // Public Routes
 // ------------------------------------------------------------------
 Route::get('/', function () {
-    $jobs = \App\Models\Job::with('company')->published()->latest()->paginate(12);
+    \App\Models\Job::closeExpiredJobs();
+    $jobs = \App\Models\Job::with('company')->active()->latest()->paginate(12);
     $company = \App\Models\Company::first();
     return view('welcome', compact('jobs', 'company'));
 });

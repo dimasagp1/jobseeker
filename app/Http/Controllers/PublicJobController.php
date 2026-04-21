@@ -11,9 +11,9 @@ class PublicJobController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Job::with('company')
-            ->where('status', 'published')
-            ->where('deadline', '>=', now());
+        Job::closeExpiredJobs();
+
+        $query = Job::with('company')->active();
 
         if ($request->filled('keyword')) {
             $query->where(function ($q) use ($request) {
@@ -43,7 +43,9 @@ class PublicJobController extends Controller
 
     public function show(Job $job)
     {
-        if ($job->status !== 'published') {
+        Job::closeExpiredJobs();
+
+        if (!$job->isActive()) {
             abort(404);
         }
 

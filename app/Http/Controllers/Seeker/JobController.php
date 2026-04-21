@@ -18,7 +18,9 @@ class JobController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Job::with('company')->where('status', 'published');
+        Job::closeExpiredJobs();
+
+        $query = Job::with('company')->active();
 
         // Filter berdasarkan keyword (Judul Pekerjaan atau Nama Perusahaan)
         if ($request->filled('keyword')) {
@@ -52,7 +54,9 @@ class JobController extends Controller
      */
     public function show(Job $job)
     {
-        if ($job->status !== 'published') {
+        Job::closeExpiredJobs();
+
+        if (!$job->isActive()) {
             abort(404);
         }
 
@@ -95,7 +99,9 @@ class JobController extends Controller
      */
     public function showApplyForm(Job $job)
     {
-        if ($job->status !== 'published') {
+        Job::closeExpiredJobs();
+
+        if (!$job->isActive()) {
             abort(404);
         }
 
@@ -127,6 +133,12 @@ class JobController extends Controller
      */
     public function submitApplication(Request $request, Job $job)
     {
+        Job::closeExpiredJobs();
+
+        if (!$job->isActive()) {
+            return redirect()->route('seeker.jobs.index')->with('error', 'Lowongan ini sudah tidak aktif.');
+        }
+
         $user = Auth::user();
         $profile = $user->seekerProfile;
 

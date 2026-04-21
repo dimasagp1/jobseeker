@@ -205,11 +205,11 @@
 
                     <div class="col-md-3">
                         <label for="salary_min" class="form-label">Gaji Min (Rp)</label>
-                        <input type="number" class="form-control" name="salary_min" value="{{ old('salary_min', (int)$job->salary_min) }}">
+                        <input type="number" class="form-control" name="salary_min" value="{{ old('salary_min', $job->salary_min) }}" placeholder="Kosongkan jika tidak dicantumkan">
                     </div>
                     <div class="col-md-3">
                         <label for="salary_max" class="form-label">Gaji Maks (Rp)</label>
-                        <input type="number" class="form-control" name="salary_max" value="{{ old('salary_max', (int)$job->salary_max) }}">
+                        <input type="number" class="form-control" name="salary_max" value="{{ old('salary_max', $job->salary_max) }}" placeholder="Kosongkan jika tidak dicantumkan">
                     </div>
                 </div>
 

@@ -25,6 +25,8 @@ class JobController extends Controller
      */
     public function index()
     {
+        Job::closeExpiredJobs();
+
         // Menggunakan withCount agar data pelamar muncul di list
         $jobs = Job::withCount('applications')->latest()->paginate(10);
         return view('company.jobs.index', compact('jobs'));
@@ -83,8 +85,8 @@ class JobController extends Controller
             'requirements' => $request->requirements,
             'responsibilities' => $request->responsibilities,
             'salary_currency' => $request->salary_currency,
-            'salary_min' => $request->salary_min,
-            'salary_max' => $request->salary_max,
+            'salary_min' => $request->filled('salary_min') ? $request->salary_min : null,
+            'salary_max' => $request->filled('salary_max') ? $request->salary_max : null,
             'salary_type' => $request->salary_type,
             'is_salary_visible' => $request->has('is_salary_visible'), // Logika checkbox
             'experience_level' => $request->experience_level,
@@ -163,8 +165,8 @@ class JobController extends Controller
             'description' => $request->description,
             'requirements' => $request->requirements,
             'responsibilities' => $request->responsibilities,
-            'salary_min' => $request->salary_min,
-            'salary_max' => $request->salary_max,
+            'salary_min' => $request->filled('salary_min') ? $request->salary_min : null,
+            'salary_max' => $request->filled('salary_max') ? $request->salary_max : null,
             'salary_type' => $request->salary_type,
             'is_salary_visible' => $request->has('is_salary_visible'),
             'experience_level' => $request->experience_level,
@@ -202,6 +204,10 @@ class JobController extends Controller
      */
     public function publish(Job $job)
     {
+        if ($job->deadline && $job->deadline->isPast() && !$job->deadline->isToday()) {
+            return back()->with('error', 'Lowongan tidak bisa diaktifkan kembali karena deadline sudah lewat. Silakan perbarui tanggal batas lamaran terlebih dahulu.');
+        }
+
         $job->update(['status' => 'published']);
         return back()->with('success', 'Lowongan berhasil diterbitkan.');
     }
