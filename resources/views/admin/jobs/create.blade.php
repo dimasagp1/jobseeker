@@ -176,6 +176,7 @@
                             <option value="full_time" {{ old('job_type') == 'full_time' ? 'selected' : '' }}>Purnawaktu (Full Time)</option>
                             <option value="part_time" {{ old('job_type') == 'part_time' ? 'selected' : '' }}>Paruh Waktu (Part Time)</option>
                             <option value="contract" {{ old('job_type') == 'contract' ? 'selected' : '' }}>Kontrak</option>
+                            <option value="harian_lepas" {{ old('job_type') == 'harian_lepas' ? 'selected' : '' }}>Harian Lepas</option>
                             <option value="internship" {{ old('job_type') == 'internship' ? 'selected' : '' }}>Magang</option>
                         </select>
                     </div>

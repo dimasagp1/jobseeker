@@ -92,7 +92,14 @@
                                         <i class="fas fa-map-marker-alt me-1"></i> {{ $job->location->name ?? 'Remote' }}
                                     </span>
                                     <span class="badge bg-light text-success border border-success-subtle rounded-pill px-3 py-2 fw-normal">
-                                        <i class="fas fa-briefcase me-1"></i> {{ $job->job_type == 'full_time' ? 'Penuh Waktu' : ($job->job_type == 'part_time' ? 'Paruh Waktu' : ($job->job_type == 'contract' ? 'Kontrak' : ($job->job_type == 'internship' ? 'Magang' : ucfirst($job->job_type)))) }}
+                                        <i class="fas fa-briefcase me-1"></i>
+                                        {{
+                                            $job->job_type == 'full_time' ? 'Penuh Waktu' :
+                                            ($job->job_type == 'part_time' ? 'Paruh Waktu' :
+                                            ($job->job_type == 'contract' ? 'Kontrak' :
+                                            ($job->job_type == 'internship' ? 'Magang' :
+                                            ($job->job_type == 'harian_lepas' ? 'Harian Lepas' : ucwords(str_replace('_', ' ', $job->job_type))))))
+                                        }}
                                     </span>
                                 </div>
                             </div>
