@@ -36,7 +36,7 @@
             </div>
             
             <!-- Quick Links -->
-            <div class="col-lg-2 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <h6 class="text-uppercase mb-3 fw-bold text-primary">Tautan Cepat</h6>
                 <ul class="list-unstyled small text-muted">
                     <li class="mb-2"><a href="{{ route('public.jobs.index') }}" class="text-decoration-none text-muted hover-text-white">Cari Lowongan</a></li>
@@ -46,15 +46,6 @@
                         <li class="mb-2"><a href="{{ route('login') }}" class="text-decoration-none text-muted hover-text-white">Masuk</a></li>
                         <li class="mb-2"><a href="{{ route('register') }}" class="text-decoration-none text-muted hover-text-white">Daftar</a></li>
                     @endauth
-                </ul>
-            </div>
-            
-            <!-- For Employers -->
-            <div class="col-lg-2 col-md-6">
-                <h6 class="text-uppercase mb-3 fw-bold text-primary">Untuk Perusahaan</h6>
-                <ul class="list-unstyled small text-muted">
-                    <li class="mb-2"><a href="{{ route('register') }}" class="text-decoration-none text-muted hover-text-white">Pasang Lowongan</a></li>
-                    <li class="mb-2"><a href="{{ route('login') }}" class="text-decoration-none text-muted hover-text-white">Login Perusahaan</a></li>
                 </ul>
             </div>
             
