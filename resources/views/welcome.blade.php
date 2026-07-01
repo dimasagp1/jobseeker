@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ $company->company_name ?? 'JobPortal' }}</title>
+        <title>{{ $siteSettings->company_name ?? 'JobPortal' }}</title>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
@@ -12,8 +12,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         @vite(['resources/sass/app.scss', 'resources/js/app.js'])
         <link href="{{ asset('css/futuristic.css') }}" rel="stylesheet">
-        @if(isset($company->favicon) && $company->favicon)
-            <link rel="icon" href="{{ asset('storage/' . $company->favicon) }}" type="image/x-icon"/>
+        @if(isset($siteSettings->favicon) && $siteSettings->favicon)
+            <link rel="icon" href="{{ asset('storage/' . $siteSettings->favicon) }}" type="image/x-icon"/>
         @endif
     </head>
     <body>
@@ -26,8 +26,8 @@
                 <div class="col-lg-6">
                     <div class="position-relative">
                         <div class="position-absolute top-50 start-50 translate-middle" style="width: 300px; height: 300px; background: var(--primary-color); opacity: 0.2; filter: blur(80px); z-index: -1; border-radius: 50%;"></div>
-                        @if(isset($company->hero_image) && $company->hero_image)
-                            <img src="{{ asset('storage/' . $company->hero_image) }}" class="d-block mx-lg-auto img-fluid rounded-4 shadow-lg border border-secondary" alt="Hero" width="700" height="500" loading="lazy">
+                        @if(isset($siteSettings->hero_image) && $siteSettings->hero_image)
+                            <img src="{{ asset('storage/' . $siteSettings->hero_image) }}" class="d-block mx-lg-auto img-fluid rounded-4 shadow-lg border border-secondary" alt="Hero" width="700" height="500" loading="lazy">
                         @else
                             <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800" class="d-block mx-lg-auto img-fluid rounded-4 shadow-lg border border-secondary" alt="Team" width="700" height="500" loading="lazy">
                         @endif
@@ -35,21 +35,21 @@
                 </div>
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold lh-1 mb-3">
-                        @if(isset($company->hero_title) && $company->hero_title)
-                            {!! preg_replace('/\*\*(.*?)\*\*/', '<span class="text-gradient">$1</span>', e($company->hero_title)) !!}
+                        @if(isset($siteSettings->hero_title) && $siteSettings->hero_title)
+                            {!! preg_replace('/\*\*(.*?)\*\*/', '<span class="text-gradient">$1</span>', e($siteSettings->hero_title)) !!}
                         @else
                             Bangun <span class="text-gradient">Masa Depan</span> Bersama Kami
                         @endif
                     </h1>
                     <p class="lead text-muted mb-4">
-                        {{ $company->hero_description ?? "Bergabunglah dengan tim visioner dan kreator. Kami mencari individu yang bersemangat untuk mendefinisikan kembali apa yang mungkin terjadi di " . ($company->company_name ?? 'JobPortal') . "." }}
+                        {{ $siteSettings->hero_description ?? "Bergabunglah dengan tim visioner dan kreator. Kami mencari individu yang bersemangat untuk mendefinisikan kembali apa yang mungkin terjadi di " . ($siteSettings->company_name ?? 'JobPortal') . "." }}
                     </p>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                         @auth
                              <a href="{{ route('seeker.jobs.index') }}" class="btn btn-primary btn-lg px-5 py-3 me-md-2">Lihat Lowongan</a>
                         @else
                              <a href="{{ route('register') }}" class="btn btn-primary btn-lg px-5 py-3 me-md-2">
-                                 {{ $company->hero_cta_text ?? 'Mulai Perjalanan Anda' }}
+                                 {{ $siteSettings->hero_cta_text ?? 'Mulai Perjalanan Anda' }}
                              </a>
                              <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg px-5 py-3">Masuk</a>
                         @endauth

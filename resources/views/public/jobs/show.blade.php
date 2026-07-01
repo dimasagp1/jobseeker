@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', $job->title . ' - ' . ($company->company_name ?? 'JobPortal'))
+@section('title', $job->title . ' - ' . ($siteSettings->company_name ?? 'JobPortal'))
 
 @section('content')
 <div class="container py-5" style="margin-top: 60px;">
