@@ -17,8 +17,10 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <link href="{{ asset('css/futuristic.css') }}" rel="stylesheet">
     
-    @if(isset($siteSettings->favicon) && $siteSettings->favicon)
+    @if(isset($siteSettings) && $siteSettings->favicon)
         <link rel="icon" href="{{ asset('storage/' . $siteSettings->favicon) }}" type="image/x-icon"/>
+    @else
+        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon"/>
     @endif
 
     <style>
