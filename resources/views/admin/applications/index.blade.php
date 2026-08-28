@@ -125,14 +125,24 @@
                             @php
                                 $statusClass = match($application->status) {
                                     'pending' => 'warning',
+                                    'reviewed' => 'secondary',
                                     'shortlisted' => 'info',
+                                    'test_invited' => 'primary',
+                                    'test_in_progress' => 'warning',
+                                    'test_completed' => 'success',
+                                    'interview' => 'dark',
                                     'accepted' => 'success',
                                     'rejected' => 'danger',
                                     default => 'secondary'
                                 };
                                 $statusText = match($application->status) {
                                     'pending' => 'Menunggu',
-                                    'shortlisted' => 'Dipertimbangkan',
+                                    'reviewed' => 'Sedang Ditinjau',
+                                    'shortlisted' => 'Lolos Berkas',
+                                    'test_invited' => 'Undangan Tes',
+                                    'test_in_progress' => 'Mengerjakan Tes',
+                                    'test_completed' => 'Tes Selesai',
+                                    'interview' => 'Wawancara',
                                     'accepted' => 'Diterima',
                                     'rejected' => 'Ditolak',
                                     default => ucfirst($application->status)

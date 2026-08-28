@@ -128,6 +128,9 @@
                                     <option value="pending" {{ old('status', $application->status) == 'pending' ? 'selected' : '' }}>🕒 Menunggu (Pending)</option>
                                     <option value="reviewed" {{ old('status', $application->status) == 'reviewed' ? 'selected' : '' }}>👀 Sedang Ditinjau (Reviewed)</option>
                                     <option value="shortlisted" {{ old('status', $application->status) == 'shortlisted' ? 'selected' : '' }}>⭐ Masuk Pertimbangan (Shortlisted)</option>
+                                    <option value="test_invited" {{ old('status', $application->status) == 'test_invited' ? 'selected' : '' }}>📝 Undangan Tes Psikotes (Test Invited)</option>
+                                    <option value="test_in_progress" {{ old('status', $application->status) == 'test_in_progress' ? 'selected' : '' }}>⏳ Sedang Mengerjakan Tes (Test in Progress)</option>
+                                    <option value="test_completed" {{ old('status', $application->status) == 'test_completed' ? 'selected' : '' }}>📊 Tes Selesai (Test Completed)</option>
                                     <option value="interview" {{ old('status', $application->status) == 'interview' ? 'selected' : '' }}>🎤 Dijadwalkan Wawancara (Interview)</option>
                                     <option value="accepted" {{ old('status', $application->status) == 'accepted' ? 'selected' : '' }}>✅ Diterima Bekerja (Accepted)</option>
                                     <option value="rejected" {{ old('status', $application->status) == 'rejected' ? 'selected' : '' }}>❌ Ditolak (Rejected)</option>

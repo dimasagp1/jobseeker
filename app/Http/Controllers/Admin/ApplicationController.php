@@ -16,7 +16,7 @@ class ApplicationController extends Controller
      * Master status yang diizinkan dalam sistem.
      * Termasuk status untuk integrasi Tes Kraepelin.
      */
-    protected $allowedStatuses = 'pending,reviewed,shortlisted,test_invited,test_in_progress,interview,rejected,accepted';
+    protected $allowedStatuses = 'pending,reviewed,shortlisted,test_invited,test_in_progress,test_completed,interview,rejected,accepted';
 
     public function index(Request $request)
     {
