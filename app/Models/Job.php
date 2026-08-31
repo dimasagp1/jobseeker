@@ -181,6 +181,22 @@ class Job extends Model
         return ucwords(str_replace(['_', '-'], ' ', $value));
     }
 
+    /**
+     * Total pelamar akurat (dengan fallback ke database count jika withCount tidak dipakai).
+     */
+    public function getApplicationsCountAttribute($value): int
+    {
+        if ($value !== null) {
+            return (int) $value;
+        }
+        
+        if ($this->relationLoaded('applications')) {
+            return $this->applications->count();
+        }
+
+        return $this->applications()->count();
+    }
+
     public function isActive(): bool
     {
         return $this->status === 'published' && !$this->isExpired();

@@ -20,7 +20,7 @@ class JobController extends Controller
     {
         Job::closeExpiredJobs();
 
-        $query = Job::with('company')->active();
+        $query = Job::with('company')->withCount('applications')->active();
 
         // Filter berdasarkan keyword (Judul Pekerjaan atau Nama Perusahaan)
         if ($request->filled('keyword')) {

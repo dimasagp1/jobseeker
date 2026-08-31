@@ -123,7 +123,7 @@
                         </div>
                         <div class="card-footer bg-light border-0 py-3 d-flex justify-content-between align-items-center small text-muted">
                             <span><i class="far fa-clock me-1"></i> {{ $job->created_at->diffForHumans() }}</span>
-                            <span>{{ $job->applications_count ?? 0 }} Pelamar</span>
+                            <span><i class="fas fa-users me-1 text-primary"></i> {{ $job->applications_count }} Pelamar</span>
                         </div>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ class PublicJobController extends Controller
     {
         Job::closeExpiredJobs();
 
-        $query = Job::with('company')->active();
+        $query = Job::with('company')->withCount('applications')->active();
 
         if ($request->filled('keyword')) {
             $query->where(function ($q) use ($request) {
