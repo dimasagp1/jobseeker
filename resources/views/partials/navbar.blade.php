@@ -2,11 +2,11 @@
     <div class="container">
         <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url('/') }}">
             @if(isset($siteSettings->company_logo) && $siteSettings->company_logo)
-                <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" class="me-2 rounded-circle" style="width: 35px; height: 35px;">
+                <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" class="rounded-circle me-md-2" style="width: 35px; height: 35px; object-fit: contain; background: white; padding: 2px;">
             @else
-                <i class="fas fa-briefcase me-2"></i>
+                <i class="fas fa-briefcase me-md-2"></i>
             @endif
-            {{ $siteSettings?->company_name ?? 'JobPortal' }}
+            <span class="d-none d-sm-inline ms-1">{{ $siteSettings?->company_name ?? 'JobPortal' }}</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
             <span class="navbar-toggler-icon"></span>

@@ -78,11 +78,11 @@
         <div class="container">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('seeker.dashboard') }}">
                 @if(isset($siteSettings) && $siteSettings && $siteSettings->company_logo)
-                    <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" class="me-2 rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                    <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" class="rounded-circle shadow-sm me-md-2" style="width: 34px; height: 34px; object-fit: contain; background: white; padding: 2px;">
                 @else
-                    <i class="fas fa-briefcase me-2 text-primary"></i>
+                    <i class="fas fa-briefcase text-primary me-md-2" style="font-size: 1.2rem;"></i>
                 @endif
-                {{ $siteSettings?->company_name ?? 'Job Portal Herbatech' }}
+                <span class="d-none d-sm-inline ms-1">{{ $siteSettings?->company_name ?? 'Job Portal Herbatech' }}</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

@@ -180,6 +180,18 @@
             display: flex;
             justify-content: space-between;
         }
+        @media (max-width: 768px) {
+            .brand-link span {
+                display: none !important;
+            }
+            .brand-link img, .brand-link div {
+                margin-right: 0 !important;
+            }
+            .brand-link {
+                justify-content: center !important;
+                padding-inline: 0.5rem !important;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -194,7 +206,7 @@
                     <i class="fas fa-building text-white" style="font-size: 0.9rem;"></i>
                 </div>
             @endif
-            <span>{{ Str::limit($company->company_name ?? 'Perusahaan', 18) }}</span>
+            <span class="d-none d-sm-inline">{{ Str::limit($company->company_name ?? 'Perusahaan', 18) }}</span>
         </a>
 
         <div class="sidebar-menu">

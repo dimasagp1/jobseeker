@@ -275,6 +275,18 @@
             margin-right: 0;
         }
 
+        @media (max-width: 768px) {
+            .brand-link span {
+                display: none !important;
+            }
+            .brand-link img, .brand-link div {
+                margin-right: 0 !important;
+            }
+            .brand-link {
+                justify-content: center !important;
+                padding-inline: 0.5rem !important;
+            }
+        }
         @media (max-width: 991.98px) {
             .sidebar-wrapper {
                 width: min(82vw, 320px);
@@ -310,7 +322,7 @@
                     <i class="fas fa-briefcase text-white" style="font-size: 0.9rem;"></i>
                 </div>
             @endif
-            <span>{{ Str::limit($siteSettings->company_name ?? 'HerbaTech Admin', 18) }}</span>
+            <span class="d-none d-sm-inline">{{ Str::limit($siteSettings->company_name ?? 'HerbaTech Admin', 18) }}</span>
         </a>
 
         <div class="sidebar-menu">
