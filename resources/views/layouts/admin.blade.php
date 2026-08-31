@@ -46,6 +46,8 @@
             display: flex;
             flex-direction: column;
             transition: width var(--sidebar-transition), transform var(--sidebar-transition);
+        }
+
         /* Pagination Icon & Layout Fixes */
         .pagination svg {
             width: 1em !important;
