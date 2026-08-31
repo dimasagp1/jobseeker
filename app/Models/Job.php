@@ -146,6 +146,41 @@ class Job extends Model
         ][$this->work_setting] ?? 'On-site';
     }
 
+    /**
+     * Label pengalaman yang mudah dibaca pengguna (Indonesian formatted).
+     */
+    public function getFormattedExperienceLevelAttribute(): string
+    {
+        $value = strtolower((string)$this->experience_level);
+
+        $map = [
+            'entry_level'        => 'Fresh Graduate / Entry Level',
+            'entry'              => 'Fresh Graduate / Entry Level',
+            'fresh_graduate'     => 'Fresh Graduate',
+            '1_3_years'          => '1 - 3 Tahun',
+            '1_3'                => '1 - 3 Tahun',
+            '3_5_years'          => '3 - 5 Tahun',
+            '3_5'                => '3 - 5 Tahun',
+            'more_than_5_years'  => 'Lebih dari 5 Tahun',
+            '5_plus_years'       => 'Diatas 5 Tahun',
+            'junior'             => 'Junior (1 - 2 Tahun)',
+            'mid'                => 'Mid Level (2 - 4 Tahun)',
+            'senior'             => 'Senior (Diatas 5 Tahun)',
+            'lead'               => 'Lead Level',
+            'manager'            => 'Managerial',
+        ];
+
+        if (isset($map[$value])) {
+            return $map[$value];
+        }
+
+        if (empty($value)) {
+            return 'Semua Tingkat';
+        }
+
+        return ucwords(str_replace(['_', '-'], ' ', $value));
+    }
+
     public function isActive(): bool
     {
         return $this->status === 'published' && !$this->isExpired();

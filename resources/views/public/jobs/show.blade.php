@@ -64,7 +64,7 @@
                         <li class="mb-2"><i class="fas fa-calendar-alt me-2 text-primary"></i> Dipasang: <strong>{{ $job->created_at->diffForHumans() }}</strong></li>
                         <li class="mb-2"><i class="fas fa-hourglass-end me-2 text-primary"></i> Batas Waktu: <strong>{{ $job->deadline ? \Carbon\Carbon::parse($job->deadline)->format('d M Y') : 'Tanpa Batas Waktu' }}</strong></li>
                         <li class="mb-2"><i class="fas fa-graduation-cap me-2 text-primary"></i> Pendidikan: <strong>{{ ucfirst($job->education_level ?? 'Semua Level') }}</strong></li>
-                        <li class="mb-2"><i class="fas fa-briefcase me-2 text-primary"></i> Pengalaman: <strong>{{ ucfirst($job->experience_level ?? 'Semua Level') }}</strong></li>
+                        <li class="mb-2"><i class="fas fa-briefcase me-2 text-primary"></i> Pengalaman: <strong>{{ $job->formatted_experience_level }}</strong></li>
                     </ul>
 
                     <div class="d-grid gap-2">

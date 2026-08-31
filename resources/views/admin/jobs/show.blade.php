@@ -180,7 +180,7 @@
                     <div class="info-icon"><i class="fas fa-user-tie"></i></div>
                     <div>
                         <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.7rem;">Pengalaman</small>
-                        <span class="text-dark fw-medium">{{ $job->experience_level ?? '-' }}</span>
+                        <span class="text-dark fw-medium">{{ $job->formatted_experience_level }}</span>
                     </div>
                 </div>
 
