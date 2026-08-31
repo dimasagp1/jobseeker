@@ -148,13 +148,63 @@ class Job extends Model
 
     public function isActive(): bool
     {
-        return $this->status === 'published' &&
-            (!$this->deadline || $this->deadline->isFuture() || $this->deadline->isToday());
+        return $this->status === 'published' && !$this->isExpired();
     }
 
     public function isExpired(): bool
     {
-        return $this->deadline && $this->deadline->isPast() && !$this->deadline->isToday();
+        if (!$this->deadline) {
+            return false;
+        }
+        return Carbon::today()->gt(Carbon::parse($this->deadline)->startOfDay());
+    }
+
+    /**
+     * Label sisa waktu / status kedaluwarsa lowongan.
+     */
+    public function getRemainingTimeLabelAttribute(): string
+    {
+        if (!$this->deadline) {
+            return 'Tanpa Batas';
+        }
+
+        $today = Carbon::today();
+        $deadlineDate = Carbon::parse($this->deadline)->startOfDay();
+
+        if ($today->gt($deadlineDate)) {
+            return 'Kedaluwarsa';
+        }
+
+        if ($today->eq($deadlineDate)) {
+            return 'Hari Ini (Terakhir)';
+        }
+
+        $daysLeft = (int) $today->diffInDays($deadlineDate);
+        return $daysLeft . ' Hari';
+    }
+
+    /**
+     * HTML formatted badge sisa waktu / kedaluwarsa lowongan.
+     */
+    public function getRemainingTimeHtmlAttribute(): string
+    {
+        if (!$this->deadline) {
+            return '<span class="text-muted fw-bold">Tanpa Batas</span>';
+        }
+
+        $today = Carbon::today();
+        $deadlineDate = Carbon::parse($this->deadline)->startOfDay();
+
+        if ($today->gt($deadlineDate)) {
+            return '<span class="text-danger fw-bold">Kedaluwarsa</span>';
+        }
+
+        if ($today->eq($deadlineDate)) {
+            return '<span class="text-warning fw-bold">Hari Ini (Terakhir)</span>';
+        }
+
+        $daysLeft = (int) $today->diffInDays($deadlineDate);
+        return '<span class="text-success fw-bold">' . $daysLeft . ' Hari</span>';
     }
 
     /**

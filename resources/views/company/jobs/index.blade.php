@@ -154,9 +154,13 @@
 
                         <td class="py-4">
                             @if($job->status === 'published')
-                                <span class="status-badge badge-aktif">Aktif</span>
+                                @if($job->isExpired())
+                                    <span class="status-badge" style="background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;">Kedaluwarsa</span>
+                                @else
+                                    <span class="status-badge badge-aktif">Tayang</span>
+                                @endif
                             @elseif($job->status === 'closed')
-                                <span class="status-badge badge-selesai">Selesai</span>
+                                <span class="status-badge badge-selesai">Ditutup</span>
                             @else
                                 <span class="status-badge badge-draft">Draft</span>
                             @endif
