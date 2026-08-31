@@ -98,8 +98,14 @@
                 </div>
 
                 @if($application->cv_path)
-                    <a href="{{ route('company.applications.download-cv', $application->id) }}" class="btn btn-outline-primary w-100 fw-bold py-2 mb-3 shadow-sm" style="border-radius: 10px;">
+                    <a href="{{ route('company.applications.download-cv', $application->id) }}" class="btn btn-outline-primary w-100 fw-bold py-2 mb-2 shadow-sm" style="border-radius: 10px;">
                         <i class="fas fa-file-download me-2"></i> Download CV / Resume
+                    </a>
+                @endif
+
+                @if($hasKraepelin || $discResult || $msdtResult || $papiResult)
+                    <a href="{{ route('company.applications.all-psychological-pdf', $application->id) }}" class="btn btn-danger w-100 fw-bold py-2 mb-3 shadow-sm" style="border-radius: 10px;" target="_blank">
+                        <i class="fas fa-file-pdf me-2"></i> Unduh Hasil Semua Tes (1 File)
                     </a>
                 @endif
                 

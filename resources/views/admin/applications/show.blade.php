@@ -100,12 +100,17 @@
 
                 <div class="mb-4">
                     <div class="fw-bold text-muted small text-uppercase mb-2" style="font-size: 0.7rem;">Status Psikotes</div>
-                    <div class="d-flex gap-2 justify-content-center">
+                    <div class="d-flex gap-2 justify-content-center mb-3">
                         <span class="psy-badge {{ $hasKraepelin ? 'bg-primary text-white' : 'bg-light text-muted border' }}" title="Kraepelin">KRA</span>
                         <span class="psy-badge {{ $discResult ? 'bg-success text-white' : 'bg-light text-muted border' }}" title="DISC">DSC</span>
                         <span class="psy-badge {{ $msdtResult ? 'bg-danger text-white' : 'bg-light text-muted border' }}" title="MSDT">MSD</span>
                         <span class="psy-badge {{ $papiResult ? 'bg-info text-white' : 'bg-light text-muted border' }}" title="PAPI Kostick">PAP</span>
                     </div>
+                    @if($hasKraepelin || $discResult || $msdtResult || $papiResult)
+                        <a href="{{ route('admin.applications.all-psychological-pdf', $application->id) }}" class="btn btn-danger btn-sm w-100 rounded-pill fw-bold shadow-sm" target="_blank">
+                            <i class="fas fa-file-pdf me-1"></i> Unduh Hasil Semua Tes (1 File)
+                        </a>
+                    @endif
                 </div>
 
                 <div class="text-left mt-4 border-top pt-4">
