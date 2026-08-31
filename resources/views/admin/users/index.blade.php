@@ -204,7 +204,7 @@
         @if($users->hasPages())
         <div class="card-footer bg-white border-top-0 pt-3 pb-3" style="border-radius: 0 0 12px 12px;">
             <div class="d-flex justify-content-center">
-                {{ $users->links() }}
+                {{ $users->onEachSide(1)->links('pagination::bootstrap-5') }}
             </div>
         </div>
         @endif

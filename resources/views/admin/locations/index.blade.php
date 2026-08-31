@@ -187,8 +187,8 @@
         </div>
 
         @if($locations->hasPages())
-        <div class="card-footer bg-white border-top py-3">
-            {{ $locations->links() }}
+        <div class="card-footer bg-white border-top py-3 d-flex justify-content-center">
+            {{ $locations->onEachSide(1)->links('pagination::bootstrap-5') }}
         </div>
         @endif
     </div>

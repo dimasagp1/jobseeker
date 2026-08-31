@@ -205,8 +205,8 @@
             </table>
         </div>
     </div>
-    <div class="card-footer bg-white border-0 py-4 px-4">
-        {{ $jobs->links() }}
+    <div class="card-footer bg-white border-0 py-4 px-4 d-flex justify-content-center">
+        {{ $jobs->onEachSide(1)->links('pagination::bootstrap-5') }}
     </div>
 </div>
 

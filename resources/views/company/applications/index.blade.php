@@ -196,7 +196,7 @@
                 Menampilkan {{ $applications->firstItem() }} - {{ $applications->lastItem() }} dari {{ $applications->total() }} kandidat
             </div>
             <div>
-                {{ $applications->links() }}
+                {{ $applications->onEachSide(1)->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

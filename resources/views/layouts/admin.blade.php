@@ -46,6 +46,19 @@
             display: flex;
             flex-direction: column;
             transition: width var(--sidebar-transition), transform var(--sidebar-transition);
+        /* Pagination Icon & Layout Fixes */
+        .pagination svg {
+            width: 1em !important;
+            height: 1em !important;
+            max-width: 1rem !important;
+            max-height: 1rem !important;
+        }
+        .pagination .page-item .page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
         }
 
         .brand-link {
