@@ -59,29 +59,41 @@
         </a>
     </div>
 
+    <div class="dashboard-card p-3 mb-4">
+        <form action="{{ route('admin.applications.index') }}" method="GET" class="row g-3 align-items-center m-0">
+            <div class="col-md-5">
+                <label class="form-label fw-bold small text-muted mb-1"><i class="fas fa-briefcase mr-1 text-primary"></i> Pilih Nama Lowongan Pekerjaan</label>
+                <select name="job_id" class="form-control shadow-none font-weight-bold" onchange="this.form.submit()" style="border-radius: 8px;">
+                    <option value="">-- Semua Lowongan Pekerjaan --</option>
+                    @foreach($jobs as $job)
+                        <option value="{{ $job->id }}" {{ request('job_id') == $job->id ? 'selected' : '' }}>
+                            {{ $job->title }} ({{ $job->company->company_name ?? 'Perusahaan' }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted mb-1"><i class="fas fa-search mr-1 text-primary"></i> Cari Kandidat / Posisi</label>
+                <input type="text" name="search" class="form-control shadow-none" placeholder="Cari nama pelamar..." value="{{ request('search') }}" style="border-radius: 8px;">
+            </div>
+            <div class="col-md-3 d-flex gap-2 align-self-end">
+                <button type="submit" class="btn btn-primary px-3 font-weight-bold flex-grow-1" style="border-radius: 8px;"><i class="fas fa-filter mr-1"></i> Filter</button>
+                @if(request()->hasAny(['job_id', 'search']))
+                    <a href="{{ route('admin.applications.index') }}" class="btn btn-light border" style="border-radius: 8px;" title="Reset Filter"><i class="fas fa-redo"></i> Reset</a>
+                @endif
+            </div>
+        </form>
+    </div>
+
     <div class="dashboard-card">
         <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center" style="border-radius: 12px 12px 0 0; border-bottom: 1px solid var(--slate-100);">
             <h6 class="mb-0 font-weight-bold text-dark">
                 @if(request('job_id'))
-                    Menampilkan Lamaran untuk Job Tertentu
+                    Daftar Pelamar untuk Lowongan Ini
                 @else
-                    Semua Riwayat Lamaran
+                    Semua Data Lamaran Masuk
                 @endif
             </h6>
-            
-            <form action="{{ route('admin.applications.index') }}" method="GET" class="m-0 d-flex">
-                @if(request('job_id'))
-                    <input type="hidden" name="job_id" value="{{ request('job_id') }}">
-                @endif
-                <div class="input-group input-group-sm shadow-sm" style="width: 250px;">
-                    <input type="text" name="search" class="form-control border-right-0" placeholder="Cari nama pelamar..." value="{{ request('search') }}" style="border-radius: 20px 0 0 20px;">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-outline-secondary border-left-0" style="border-radius: 0 20px 20px 0; background: #fff;">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
         </div>
         
         <div class="card-body table-responsive p-0">

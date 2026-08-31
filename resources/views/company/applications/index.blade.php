@@ -102,6 +102,32 @@
         </span>
     </div>
 </div>
+<div class="card app-card border-0 p-3 mb-4">
+    <form method="GET" action="{{ route('company.applications.index') }}" class="row g-3 align-items-center">
+        <div class="col-lg-5 col-md-6">
+            <label class="form-label fw-bold small text-muted mb-1"><i class="fas fa-briefcase me-1 text-primary"></i> Filter Nama Lowongan Pekerjaan</label>
+            <select name="job_id" class="form-select border-1 rounded-3 shadow-none fw-semibold text-dark" onchange="this.form.submit()">
+                <option value="">-- Semua Lowongan Pekerjaan --</option>
+                @foreach($jobs as $job)
+                    <option value="{{ $job->id }}" {{ request('job_id') == $job->id ? 'selected' : '' }}>
+                        {{ $job->title }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <label class="form-label fw-bold small text-muted mb-1"><i class="fas fa-search me-1 text-primary"></i> Cari Nama / Email Kandidat</label>
+            <input type="text" name="search" class="form-control border-1 rounded-3 shadow-none" placeholder="Ketik kata kunci..." value="{{ request('search') }}">
+        </div>
+        <div class="col-lg-3 col-md-12 d-flex gap-2 align-self-end">
+            <button type="submit" class="btn btn-primary rounded-3 px-3 fw-bold flex-grow-1"><i class="fas fa-filter me-1"></i> Filter</button>
+            @if(request()->hasAny(['job_id', 'search', 'status']))
+                <a href="{{ route('company.applications.index') }}" class="btn btn-light border rounded-3" title="Reset Filter"><i class="fas fa-redo"></i></a>
+            @endif
+        </div>
+    </form>
+</div>
+
 <div class="card app-card border-0">
     <div class="table-responsive">
         <table class="table align-middle mb-0">

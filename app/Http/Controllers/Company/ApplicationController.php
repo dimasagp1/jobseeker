@@ -12,15 +12,36 @@ use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $company = Auth::user()->company;
-        $applications = JobApplication::whereIn('job_id', $company->jobs()->pluck('id'))
-            ->with(['job', 'user'])
-            ->latest()
-            ->paginate(15);
+        $jobs = $company->jobs()->latest()->get();
 
-        return view('company.applications.index', compact('applications'));
+        $query = JobApplication::whereIn('job_id', $jobs->pluck('id'))
+            ->with(['job', 'user', 'kraepelinTest', 'psychologicalResults']);
+
+        if ($request->filled('job_id')) {
+            $query->where('job_id', $request->job_id);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', function($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%");
+                })->orWhereHas('job', function($jobQuery) use ($search) {
+                    $jobQuery->where('title', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $applications = $query->latest()->paginate(15)->appends($request->query());
+
+        return view('company.applications.index', compact('applications', 'jobs'));
     }
 
     public function show(JobApplication $application)

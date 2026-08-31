@@ -20,20 +20,18 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
-        // Eager load relasi. withTrashed() digunakan pada job agar data lamaran 
-        // tetap bisa diakses meskipun lowongannya sudah dihapus (soft delete).
+        $jobs = Job::withTrashed()->latest()->get();
+
         $query = JobApplication::with([
             'job' => function($q) { $q->withTrashed(); },
             'job.company', 
             'user'
         ]);
 
-        // Filter berdasarkan lowongan spesifik
         if ($request->filled('job_id')) {
             $query->where('job_id', $request->job_id);
         }
 
-        // Fitur Pencarian (Nama Pelamar atau Judul Posisi)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -47,7 +45,7 @@ class ApplicationController extends Controller
 
         $applications = $query->latest()->paginate(15)->appends($request->query());
             
-        return view('admin.applications.index', compact('applications'));
+        return view('admin.applications.index', compact('applications', 'jobs'));
     }
 
     public function create()
