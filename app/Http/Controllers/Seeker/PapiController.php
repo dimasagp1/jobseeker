@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\PsychologicalQuestion;
 use App\Models\PsychologicalTestResult;
+use App\Models\Company;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -143,5 +145,30 @@ class PapiController extends Controller
     public function showCompleted(JobApplication $application)
     {
         return view('seeker.psychological_completed', compact('application'));
+    }
+
+    public function exportPdf(JobApplication $application)
+    {
+        $application->load(['user', 'job.company']);
+        $papiResult = $application->psychologicalResults()
+            ->where('test_type', 'papi')
+            ->where('status', 'completed')
+            ->first();
+
+        if (!$papiResult) {
+            return back()->with('error', 'Data tes PAPI tidak ditemukan atau belum selesai.');
+        }
+
+        $siteSettings = Company::first();
+        $logoBase64 = null;
+        if ($siteSettings && $siteSettings->company_logo && file_exists(public_path('storage/' . $siteSettings->company_logo))) {
+            $path = public_path('storage/' . $siteSettings->company_logo);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
+        $pdf = Pdf::loadView('company.applications.papi_pdf', compact('application', 'papiResult', 'siteSettings', 'logoBase64'));
+        return $pdf->setPaper('a4', 'portrait')->download('Laporan_PAPI_' . $application->user->name . '.pdf');
     }
 }

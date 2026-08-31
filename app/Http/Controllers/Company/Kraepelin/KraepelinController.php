@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Company\Kraepelin;
 use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\KraepelinTest;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
@@ -228,6 +229,15 @@ class KraepelinController extends Controller
             return back()->with('error', 'Data tes tidak lengkap.');
         }
 
+        $siteSettings = Company::first();
+        $logoBase64 = null;
+        if ($siteSettings && $siteSettings->company_logo && file_exists(public_path('storage/' . $siteSettings->company_logo))) {
+            $path = public_path('storage/' . $siteSettings->company_logo);
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        }
+
         $analysis = [
             'speed' => $this->getLabel($test->panker, 10, 15),
             'accuracy' => $test->tianker < 5 ? 'Sangat Baik' : ($test->tianker < 15 ? 'Baik' : 'Perlu Perhatian'),
@@ -235,7 +245,7 @@ class KraepelinController extends Controller
             'endurance' => $test->ganker >= 0 ? 'Meningkat/Stabil' : 'Menurun (Mudah Lelah)'
         ];
 
-        $pdf = Pdf::loadView('company.applications.kraepelin_pdf', compact('application', 'test', 'analysis'));
+        $pdf = Pdf::loadView('company.applications.kraepelin_pdf', compact('application', 'test', 'analysis', 'siteSettings', 'logoBase64'));
         return $pdf->setPaper('a4', 'portrait')->download('Laporan_Kraepelin_' . $application->user->name . '.pdf');
     }
 

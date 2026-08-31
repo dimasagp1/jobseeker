@@ -583,6 +583,9 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                                 <h5 class="fw-bold mb-1">Evaluasi Psikologi DISC</h5>
                                 <p class="small text-muted mb-0">Pemetaan kecenderungan perilaku, gaya komunikasi, dan adaptasi lingkungan kerja.</p>
                             </div>
+                            <a href="{{ route('company.applications.disc-pdf', $application->id) }}" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
+                            </a>
                         </div>
 
                         {{-- KESIMPULAN KEPRIBADIAN (AI ANALYSIS) --}}
@@ -786,9 +789,14 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                             }
                         @endphp
 
-                        <div class="mb-4 border-bottom pb-3">
-                            <h5 class="fw-bold mb-1">Management Style Diagnostic Test (MSDT)</h5>
-                            <p class="small text-muted mb-0">Menilai gaya kepemimpinan, orientasi tugas vs relasi, dan efektivitas situasional.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                            <div>
+                                <h5 class="fw-bold mb-1">Management Style Diagnostic Test (MSDT)</h5>
+                                <p class="small text-muted mb-0">Menilai gaya kepemimpinan, orientasi tugas vs relasi, dan efektivitas situasional.</p>
+                            </div>
+                            <a href="{{ route('company.applications.msdt-pdf', $application->id) }}" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
+                            </a>
                         </div>
 
                         {{-- BANNER KESIMPULAN UTAMA --}}
@@ -948,9 +956,14 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                             ];
                         @endphp
 
-                        <div class="mb-4 border-bottom pb-3">
-                            <h5 class="fw-bold mb-1">PAPI Kostick Analysis (Personality and Preference Inventory)</h5>
-                            <p class="small text-muted mb-0">Pemetaan komprehensif atas dinamika <span class="fw-bold text-primary">Roles</span> (Peran nyata di tempat kerja) dan <span class="fw-bold text-danger">Needs</span> (Kebutuhan psikologis internal).</p>
+                        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                            <div>
+                                <h5 class="fw-bold mb-1">PAPI Kostick Analysis (Personality and Preference Inventory)</h5>
+                                <p class="small text-muted mb-0">Pemetaan komprehensif atas dinamika <span class="fw-bold text-primary">Roles</span> (Peran nyata di tempat kerja) dan <span class="fw-bold text-danger">Needs</span> (Kebutuhan psikologis internal).</p>
+                            </div>
+                            <a href="{{ route('company.applications.papi-pdf', $application->id) }}" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
+                            </a>
                         </div>
 
                         <div class="row g-4">

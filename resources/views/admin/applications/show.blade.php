@@ -308,7 +308,9 @@
                             @endphp
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">Evaluasi Psikologi DISC</h5><p class="small text-muted mb-0">Pemetaan perilaku, komunikasi, dan adaptasi kerja.</p></div>
-                                {{-- Tombol Export Dihapus --}}
+                                @if(Route::has('admin.applications.disc-pdf'))
+                                <a href="{{ route('admin.applications.disc-pdf', $application->id) }}" class="btn btn-outline-success rounded-pill px-4 fw-bold shadow-sm" target="_blank"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                @endif
                             </div>
                             <div class="row g-4">
                                 <div class="col-md-7">
@@ -352,7 +354,9 @@
                             @endphp
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">MSDT Kepemimpinan</h5><p class="small text-muted mb-0">Orientasi Tugas (TO) vs Relasi (RO).</p></div>
-                                {{-- Tombol Export Dihapus --}}
+                                @if(Route::has('admin.applications.msdt-pdf'))
+                                <a href="{{ route('admin.applications.msdt-pdf', $application->id) }}" class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm" target="_blank"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                @endif
                             </div>
                             <div class="card bg-danger text-white mb-4 border-0 shadow-sm rounded-lg">
                                 <div class="card-body p-4 text-center">
@@ -388,7 +392,9 @@
                             @endphp
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">PAPI Kostick</h5><p class="small text-muted mb-0">Pemetaan peran kerja dan kebutuhan psikologis.</p></div>
-                                {{-- Tombol Export Dihapus --}}
+                                @if(Route::has('admin.applications.papi-pdf'))
+                                <a href="{{ route('admin.applications.papi-pdf', $application->id) }}" class="btn btn-outline-info rounded-pill px-4 fw-bold shadow-sm" target="_blank"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                @endif
                             </div>
                             <div class="kraepelin-card shadow-sm border-0 bg-white p-4 rounded-lg">
                                 <h6 class="fw-bold mb-3 text-center text-dark"><i class="fas fa-spider mr-2 text-info"></i>Peta Kepribadian (Radar Chart)</h6>

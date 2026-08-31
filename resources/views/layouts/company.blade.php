@@ -26,7 +26,7 @@
         /* SIDEBAR MODERN (Sama seperti AdminLTE Dark) */
         .sidebar-wrapper {
             width: 260px;
-            min-height: 100vh;
+            height: 100vh;
             background-color: #0f172a; /* Deep Slate Blue */
             box-shadow: 4px 0 10px rgba(0,0,0,0.05);
             position: fixed;
@@ -47,6 +47,7 @@
             font-weight: 700;
             letter-spacing: 0.5px;
             font-size: 1rem;
+            flex-shrink: 0;
         }
         .brand-link:hover { color: #ffffff; }
 
@@ -54,6 +55,8 @@
             padding: 1rem 0.5rem;
             flex-grow: 1;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #334155 transparent;
         }
         .sidebar-menu::-webkit-scrollbar { width: 5px; }
         .sidebar-menu::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 5px; }

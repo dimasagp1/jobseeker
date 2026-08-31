@@ -158,6 +158,21 @@
                                         <input type="url" name="twitter" class="form-control input-style" value="{{ old('twitter', $company->twitter) }}">
                                     </div>
                                 </div>
+
+                                <div class="section-title mt-5 text-danger"><i class="fas fa-file-pdf me-1"></i> Header Laporan PDF Psikotes</div>
+                                <div class="form-group mb-4">
+                                    <label class="form-label-custom">Judul Header PDF</label>
+                                    <input type="text" name="pdf_header_title" class="form-control input-style" 
+                                           placeholder="Contoh: HerbaTech | Human Resources Dept."
+                                           value="{{ old('pdf_header_title', $company->pdf_header_title) }}">
+                                    <small class="text-muted">Jika dikosongkan, akan otomatis menggunakan Nama Perusahaan.</small>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label class="form-label-custom">Sub-Judul / Catatan Header PDF</label>
+                                    <input type="text" name="pdf_header_subtitle" class="form-control input-style" 
+                                           placeholder="Contoh: Laporan Evaluasi Psikometri & Potensi Kerja"
+                                           value="{{ old('pdf_header_subtitle', $company->pdf_header_subtitle) }}">
+                                </div>
                             </div>
 
                             {{-- KOLOM KANAN --}}
