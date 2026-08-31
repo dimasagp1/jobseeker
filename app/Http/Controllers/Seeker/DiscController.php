@@ -200,7 +200,11 @@ class DiscController extends Controller
             $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
 
-        $pdf = Pdf::loadView('company.applications.disc_pdf', compact('application', 'discResult', 'siteSettings', 'logoBase64'));
-        return $pdf->setPaper('a4', 'portrait')->download('Laporan_DISC_' . $application->user->name . '.pdf');
+        $pdf = Pdf::loadView('company.applications.disc_pdf', compact('application', 'discResult', 'siteSettings', 'logoBase64'))->setPaper('a4', 'portrait');
+        $filename = 'Laporan_DISC_' . $application->user->name . '.pdf';
+        if (request()->query('stream') == 1 || request()->query('preview') == 1) {
+            return $pdf->stream($filename);
+        }
+        return $pdf->download($filename);
     }
 }

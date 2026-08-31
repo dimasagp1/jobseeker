@@ -59,8 +59,8 @@
         .progress-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 10px; border-radius: 6px; margin-bottom: 8px; }
         .progress-title { font-size: 10px; font-weight: bold; color: #1e293b; }
         .progress-score { float: right; font-size: 10px; font-weight: bold; color: #0f172a; }
-        .progress-bg { background: #e2e8f0; height: 6px; border-radius: 3px; width: 100%; margin-top: 4px; margin-bottom: 3px; }
-        .progress-bar { height: 6px; border-radius: 3px; background: #2563eb; }
+        .progress-bg { background: #e2e8f0; height: 7px; border-radius: 3.5px; width: 100%; margin-top: 4px; margin-bottom: 3px; }
+        .progress-bar { height: 7px; border-radius: 3.5px; background: #2563eb; }
 
         .papi-table { width: 100%; margin-bottom: 15px; border: 1px solid #cbd5e1; }
         .papi-table th { background: #0f172a; color: #ffffff; font-size: 9px; padding: 5px; text-transform: uppercase; text-align: left; }
@@ -147,6 +147,35 @@
                 dan stamina <b>{{ $kraepelinTest->ganker >= 0 ? 'positif / konsisten' : 'menurun' }}</b> ({{ $kraepelinTest->ganker }}).
             </div>
         </div>
+
+        {{-- VISUAL DIAGRAM KRAEPELIN P-T-J-G --}}
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+            <div style="font-size: 9px; font-weight: bold; color: #4338ca; margin-bottom: 6px; text-transform: uppercase; text-align: center;">Diagram Indikator Kinerja P-T-J-G</div>
+            <table style="width: 70%; margin: 0 auto; border-bottom: 2px solid #cbd5e1;">
+                <tr style="height: 70px; vertical-align: bottom;">
+                    <td style="text-align: center; width: 25%;">
+                        <div style="font-size: 8px; font-weight: bold; color: #2563eb; margin-bottom: 2px;">{{ round($kraepelinTest->panker, 1) }}</div>
+                        <div style="background: #2563eb; width: 22px; margin: 0 auto; height: {{ max(4, min(60, ($kraepelinTest->panker/25)*60)) }}px; border-radius: 3px 3px 0 0;"></div>
+                        <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">PK (Kecepatan)</div>
+                    </td>
+                    <td style="text-align: center; width: 25%;">
+                        <div style="font-size: 8px; font-weight: bold; color: #dc2626; margin-bottom: 2px;">{{ $kraepelinTest->tianker }}</div>
+                        <div style="background: #dc2626; width: 22px; margin: 0 auto; height: {{ max(4, min(60, ($kraepelinTest->tianker/25)*60)) }}px; border-radius: 3px 3px 0 0;"></div>
+                        <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">TK (Ketelitian)</div>
+                    </td>
+                    <td style="text-align: center; width: 25%;">
+                        <div style="font-size: 8px; font-weight: bold; color: #d97706; margin-bottom: 2px;">{{ $kraepelinTest->janker }}</div>
+                        <div style="background: #d97706; width: 22px; margin: 0 auto; height: {{ max(4, min(60, ($kraepelinTest->janker/25)*60)) }}px; border-radius: 3px 3px 0 0;"></div>
+                        <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">JK (Stabilitas)</div>
+                    </td>
+                    <td style="text-align: center; width: 25%;">
+                        <div style="font-size: 8px; font-weight: bold; color: #16a34a; margin-bottom: 2px;">{{ $kraepelinTest->ganker }}</div>
+                        <div style="background: #16a34a; width: 22px; margin: 0 auto; height: {{ max(4, min(60, (max(0, $kraepelinTest->ganker + 10)/25)*60)) }}px; border-radius: 3px 3px 0 0;"></div>
+                        <div style="font-size: 8px; font-weight: bold; margin-top: 4px;">GK (Ketahanan)</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     @endif
 
     {{-- BAGIAN 2: DISC ASSESSMENT --}}
@@ -165,6 +194,35 @@
                 <b>Skor Karakter:</b> D (Dominance): {{ $d_score }} | I (Influence): {{ $i_score }} | S (Steadiness): {{ $s_score }} | C (Compliance): {{ $c_score }}<br>
                 <b>Interpretasi Singkat:</b> {{ $discResult->interpretation ?? 'Kandidat menunjukkan preferensi perilaku kerja sesuai pola grafik DISC di atas.' }}
             </div>
+        </div>
+
+        {{-- VISUAL DIAGRAM DISC BAR COLUMNS --}}
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+            <div style="font-size: 9px; font-weight: bold; color: #16a34a; margin-bottom: 6px; text-transform: uppercase; text-align: center;">Diagram Intensitas Karakter DISC</div>
+            <table style="width: 70%; margin: 0 auto; border-bottom: 2px solid #cbd5e1;">
+                <tr style="height: 80px; vertical-align: bottom;">
+                    <td style="text-align: center; width: 25%;">
+                        <div style="font-size: 8px; font-weight: bold; color: #dc2626; margin-bottom: 2px;">{{ $d_score }}</div>
+                        <div style="background: #dc2626; width: 24px; margin: 0 auto; height: {{ max(4, ($d_score/40)*70) }}px; border-radius: 3px 3px 0 0;"></div>
+                        <div style="font-size: 9px; font-weight: bold; margin-top: 4px; color: #dc2626;">D (Dominance)</div>
+                    </td>
+                    <td style="text-align: center; width: 25%;">
+                        <div style="font-size: 8px; font-weight: bold; color: #d97706; margin-bottom: 2px;">{{ $i_score }}</div>
+                        <div style="background: #d97706; width: 24px; margin: 0 auto; height: {{ max(4, ($i_score/40)*70) }}px; border-radius: 3px 3px 0 0;"></div>
+                        <div style="font-size: 9px; font-weight: bold; margin-top: 4px; color: #d97706;">I (Influence)</div>
+                    </td>
+                    <td style="text-align: center; width: 25%;">
+                        <div style="font-size: 8px; font-weight: bold; color: #16a34a; margin-bottom: 2px;">{{ $s_score }}</div>
+                        <div style="background: #16a34a; width: 24px; margin: 0 auto; height: {{ max(4, ($s_score/40)*70) }}px; border-radius: 3px 3px 0 0;"></div>
+                        <div style="font-size: 9px; font-weight: bold; margin-top: 4px; color: #16a34a;">S (Steadiness)</div>
+                    </td>
+                    <td style="text-align: center; width: 25%;">
+                        <div style="font-size: 8px; font-weight: bold; color: #2563eb; margin-bottom: 2px;">{{ $c_score }}</div>
+                        <div style="background: #2563eb; width: 24px; margin: 0 auto; height: {{ max(4, ($c_score/40)*70) }}px; border-radius: 3px 3px 0 0;"></div>
+                        <div style="font-size: 9px; font-weight: bold; margin-top: 4px; color: #2563eb;">C (Compliance)</div>
+                    </td>
+                </tr>
+            </table>
         </div>
     @endif
 
@@ -187,8 +245,27 @@
         <div class="summary-box">
             <div class="summary-text">
                 <b>Gaya Kepemimpinan Utama:</b> {{ strtoupper($style) }}<br>
-                <b>Dimensi Metrik:</b> Orientasi Tugas (TO): {{ $to_score }}/20 | Orientasi Relasi (RO): {{ $ro_score }}/20 | Efektivitas (E): {{ $e_score }}/20<br>
                 <b>Catatan Analisis:</b> {{ $msdtResult->interpretation ?? 'Analisis kepemimpinan menilai gaya interaksi manajerial dan efektivitas situasional kandidat.' }}
+            </div>
+        </div>
+
+        {{-- VISUAL DIAGRAM MSDT PROGRESS METERS --}}
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+            <div style="font-size: 9px; font-weight: bold; color: #dc2626; margin-bottom: 6px; text-transform: uppercase;">Diagram Skor Dimensi Kepemimpinan MSDT</div>
+            
+            <div class="progress-box">
+                <div class="progress-title">Orientasi Tugas (TO) <span class="progress-score">{{ $to_score }} / 20</span></div>
+                <div class="progress-bg"><div class="progress-bar" style="width: {{ min(100, ($to_score/20)*100) }}%; background: #2563eb;"></div></div>
+            </div>
+
+            <div class="progress-box">
+                <div class="progress-title">Orientasi Relasi (RO) <span class="progress-score">{{ $ro_score }} / 20</span></div>
+                <div class="progress-bg"><div class="progress-bar" style="width: {{ min(100, ($ro_score/20)*100) }}%; background: #0284c7;"></div></div>
+            </div>
+
+            <div class="progress-box">
+                <div class="progress-title">Efektivitas Situasional (E) <span class="progress-score">{{ $e_score }} / 20</span></div>
+                <div class="progress-bg"><div class="progress-bar" style="width: {{ min(100, ($e_score/20)*100) }}%; background: #16a34a;"></div></div>
             </div>
         </div>
     @endif
@@ -209,9 +286,10 @@
         <table class="papi-table">
             <thead>
                 <tr>
-                    <th style="width: 10%;">Kode</th>
-                    <th style="width: 70%;">Dimensi Psikologi PAPI Kostick</th>
-                    <th style="width: 20%; text-align: center;">Skor (0-9)</th>
+                    <th style="width: 8%;">Kode</th>
+                    <th style="width: 42%;">Dimensi Psikologi PAPI Kostick</th>
+                    <th style="width: 35%;">Visual Meter (0 - 9)</th>
+                    <th style="width: 15%; text-align: center;">Skor</th>
                 </tr>
             </thead>
             <tbody>
@@ -219,7 +297,12 @@
                     @php $score = $papiData[$code] ?? 0; @endphp
                     <tr>
                         <td style="font-weight: bold; text-align: center;">{{ $code }}</td>
-                        <td>{{ $name }}</td>
+                        <td><b>{{ $name }}</b></td>
+                        <td>
+                            <div style="background: #e2e8f0; height: 6px; border-radius: 3px; width: 100%;">
+                                <div style="background: #0284c7; height: 6px; border-radius: 3px; width: {{ min(100, ($score/9)*100) }}%;"></div>
+                            </div>
+                        </td>
                         <td style="text-align: center; font-weight: bold; color: #0284c7;">{{ $score }} Poin</td>
                     </tr>
                 @endforeach

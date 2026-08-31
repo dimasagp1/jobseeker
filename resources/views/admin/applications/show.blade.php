@@ -107,7 +107,9 @@
                         <span class="psy-badge {{ $papiResult ? 'bg-info text-white' : 'bg-light text-muted border' }}" title="PAPI Kostick">PAP</span>
                     </div>
                     @if($hasKraepelin || $discResult || $msdtResult || $papiResult)
-                        <a href="{{ route('admin.applications.all-psychological-pdf', $application->id) }}" class="btn btn-danger btn-sm w-100 rounded-pill fw-bold shadow-sm" target="_blank">
+                        <a href="{{ route('admin.applications.all-psychological-pdf', $application->id) }}" 
+                           onclick="openPdfPreviewModal('{{ route('admin.applications.all-psychological-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.all-psychological-pdf', $application->id) }}', 'Pratinjau Laporan Lengkap Psikotes'); return false;" 
+                           class="btn btn-danger btn-sm w-100 rounded-pill fw-bold shadow-sm">
                             <i class="fas fa-file-pdf me-1"></i> Unduh Hasil Semua Tes (1 File)
                         </a>
                     @endif
@@ -260,7 +262,9 @@
                                 
                                 {{-- Tombol Export Kraepelin tetap ada --}}
                                 @if(Route::has('admin.applications.kraepelin-pdf'))
-                                <a href="{{ route('admin.applications.kraepelin-pdf', $application->id) }}" class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm" target="_blank"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                <a href="{{ route('admin.applications.kraepelin-pdf', $application->id) }}" 
+                                   onclick="openPdfPreviewModal('{{ route('admin.applications.kraepelin-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.kraepelin-pdf', $application->id) }}', 'Pratinjau Kraepelin Assessment'); return false;" 
+                                   class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
                                 @endif
                             </div>
 
@@ -314,7 +318,9 @@
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">Evaluasi Psikologi DISC</h5><p class="small text-muted mb-0">Pemetaan perilaku, komunikasi, dan adaptasi kerja.</p></div>
                                 @if(Route::has('admin.applications.disc-pdf'))
-                                <a href="{{ route('admin.applications.disc-pdf', $application->id) }}" class="btn btn-outline-success rounded-pill px-4 fw-bold shadow-sm" target="_blank"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                <a href="{{ route('admin.applications.disc-pdf', $application->id) }}" 
+                                   onclick="openPdfPreviewModal('{{ route('admin.applications.disc-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.disc-pdf', $application->id) }}', 'Pratinjau Evaluasi Perilaku DISC'); return false;" 
+                                   class="btn btn-outline-success rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
                                 @endif
                             </div>
                             <div class="row g-4">
@@ -360,7 +366,9 @@
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">MSDT Kepemimpinan</h5><p class="small text-muted mb-0">Orientasi Tugas (TO) vs Relasi (RO).</p></div>
                                 @if(Route::has('admin.applications.msdt-pdf'))
-                                <a href="{{ route('admin.applications.msdt-pdf', $application->id) }}" class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm" target="_blank"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                <a href="{{ route('admin.applications.msdt-pdf', $application->id) }}" 
+                                   onclick="openPdfPreviewModal('{{ route('admin.applications.msdt-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.msdt-pdf', $application->id) }}', 'Pratinjau Laporan MSDT Kepemimpinan'); return false;" 
+                                   class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
                                 @endif
                             </div>
                             <div class="card bg-danger text-white mb-4 border-0 shadow-sm rounded-lg">
@@ -398,7 +406,9 @@
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">PAPI Kostick</h5><p class="small text-muted mb-0">Pemetaan peran kerja dan kebutuhan psikologis.</p></div>
                                 @if(Route::has('admin.applications.papi-pdf'))
-                                <a href="{{ route('admin.applications.papi-pdf', $application->id) }}" class="btn btn-outline-info rounded-pill px-4 fw-bold shadow-sm" target="_blank"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                <a href="{{ route('admin.applications.papi-pdf', $application->id) }}" 
+                                   onclick="openPdfPreviewModal('{{ route('admin.applications.papi-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.papi-pdf', $application->id) }}', 'Pratinjau Laporan PAPI Kostick'); return false;" 
+                                   class="btn btn-outline-info rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
                                 @endif
                             </div>
                             <div class="kraepelin-card shadow-sm border-0 bg-white p-4 rounded-lg">
@@ -493,6 +503,46 @@
         });
     }
     @endif
+</script>
+
+<!-- MODAL POPUP PREVIEW PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 92vw; height: 90vh;">
+        <div class="modal-content h-100 border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header bg-dark text-white p-3">
+                <h5 class="modal-title fw-bold small text-uppercase" id="pdfPreviewModalLabel">
+                    <i class="fas fa-file-pdf text-danger me-2"></i> Pratinjau Laporan Hasil Tes Psikotes
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
+                <iframe id="pdfPreviewIframe" src="about:blank" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="modal-footer bg-white p-3 d-flex justify-content-between">
+                <a id="btnOpenNewTab" href="#" target="_blank" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                    <i class="fas fa-external-link-alt me-1"></i> Buka di Tab Baru
+                </a>
+                <div>
+                    <button type="button" class="btn btn-secondary rounded-pill px-4 me-2" data-bs-dismiss="modal">Tutup</button>
+                    <a id="btnDownloadPdf" href="#" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="fas fa-download me-1"></i> Unduh File PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPdfPreviewModal(streamUrl, downloadUrl, title) {
+    document.getElementById('pdfPreviewModalLabel').innerHTML = '<i class="fas fa-file-pdf text-danger me-2"></i> ' + (title || 'Pratinjau Laporan Hasil Tes Psikotes');
+    document.getElementById('pdfPreviewIframe').src = streamUrl;
+    document.getElementById('btnOpenNewTab').href = streamUrl;
+    document.getElementById('btnDownloadPdf').href = downloadUrl;
+    
+    var myModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+    myModal.show();
+}
 </script>
 
 @endsection

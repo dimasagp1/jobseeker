@@ -135,9 +135,15 @@ class ApplicationController extends Controller
 
         $pdf = Pdf::loadView('company.applications.all_psychological_pdf', compact(
             'application', 'kraepelinTest', 'discResult', 'msdtResult', 'papiResult', 'siteSettings', 'logoBase64'
-        ));
+        ))->setPaper('a4', 'portrait');
 
-        return $pdf->setPaper('a4', 'portrait')->download('Laporan_Lengkap_Psikotes_' . $application->user->name . '.pdf');
+        $filename = 'Laporan_Lengkap_Psikotes_' . $application->user->name . '.pdf';
+
+        if (request()->query('stream') == 1 || request()->query('preview') == 1) {
+            return $pdf->stream($filename);
+        }
+
+        return $pdf->download($filename);
     }
 
     private function authorizeAccess(JobApplication $application)

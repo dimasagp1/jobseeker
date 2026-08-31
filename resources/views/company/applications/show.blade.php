@@ -104,7 +104,9 @@
                 @endif
 
                 @if($hasKraepelin || $discResult || $msdtResult || $papiResult)
-                    <a href="{{ route('company.applications.all-psychological-pdf', $application->id) }}" class="btn btn-danger w-100 fw-bold py-2 mb-3 shadow-sm" style="border-radius: 10px;" target="_blank">
+                    <a href="{{ route('company.applications.all-psychological-pdf', $application->id) }}" 
+                       onclick="openPdfPreviewModal('{{ route('company.applications.all-psychological-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.all-psychological-pdf', $application->id) }}', 'Pratinjau Laporan Lengkap Psikotes'); return false;" 
+                       class="btn btn-danger w-100 fw-bold py-2 mb-3 shadow-sm" style="border-radius: 10px;">
                         <i class="fas fa-file-pdf me-2"></i> Unduh Hasil Semua Tes (1 File)
                     </a>
                 @endif
@@ -319,7 +321,9 @@
                                 <h5 class="fw-bold mb-1">Executive Summary Kraepelin</h5>
                                 <p class="small text-muted mb-0">Laporan komprehensif performa kognitif, stabilitas emosi, dan akurasi.</p>
                             </div>
-                            <a href="{{ route('company.applications.kraepelin-pdf', $application->id) }}" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+                            <a href="{{ route('company.applications.kraepelin-pdf', $application->id) }}" 
+                               onclick="openPdfPreviewModal('{{ route('company.applications.kraepelin-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.kraepelin-pdf', $application->id) }}', 'Pratinjau Kraepelin Assessment'); return false;" 
+                               class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
                                 <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
                             </a>
                         </div>
@@ -589,7 +593,9 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                                 <h5 class="fw-bold mb-1">Evaluasi Psikologi DISC</h5>
                                 <p class="small text-muted mb-0">Pemetaan kecenderungan perilaku, gaya komunikasi, dan adaptasi lingkungan kerja.</p>
                             </div>
-                            <a href="{{ route('company.applications.disc-pdf', $application->id) }}" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+                            <a href="{{ route('company.applications.disc-pdf', $application->id) }}" 
+                               onclick="openPdfPreviewModal('{{ route('company.applications.disc-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.disc-pdf', $application->id) }}', 'Pratinjau Evaluasi Perilaku DISC'); return false;" 
+                               class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">
                                 <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
                             </a>
                         </div>
@@ -800,7 +806,9 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                                 <h5 class="fw-bold mb-1">Management Style Diagnostic Test (MSDT)</h5>
                                 <p class="small text-muted mb-0">Menilai gaya kepemimpinan, orientasi tugas vs relasi, dan efektivitas situasional.</p>
                             </div>
-                            <a href="{{ route('company.applications.msdt-pdf', $application->id) }}" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+                            <a href="{{ route('company.applications.msdt-pdf', $application->id) }}" 
+                               onclick="openPdfPreviewModal('{{ route('company.applications.msdt-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.msdt-pdf', $application->id) }}', 'Pratinjau Laporan MSDT Kepemimpinan'); return false;" 
+                               class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
                                 <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
                             </a>
                         </div>
@@ -967,7 +975,9 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                                 <h5 class="fw-bold mb-1">PAPI Kostick Analysis (Personality and Preference Inventory)</h5>
                                 <p class="small text-muted mb-0">Pemetaan komprehensif atas dinamika <span class="fw-bold text-primary">Roles</span> (Peran nyata di tempat kerja) dan <span class="fw-bold text-danger">Needs</span> (Kebutuhan psikologis internal).</p>
                             </div>
-                            <a href="{{ route('company.applications.papi-pdf', $application->id) }}" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+                            <a href="{{ route('company.applications.papi-pdf', $application->id) }}" 
+                               onclick="openPdfPreviewModal('{{ route('company.applications.papi-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.papi-pdf', $application->id) }}', 'Pratinjau Laporan PAPI Kostick'); return false;" 
+                               class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm">
                                 <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
                             </a>
                         </div>
@@ -1263,5 +1273,46 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
     }
     @endif
 </script>
+
+<!-- MODAL POPUP PREVIEW PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 92vw; height: 90vh;">
+        <div class="modal-content h-100 border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header bg-dark text-white p-3">
+                <h5 class="modal-title fw-bold small text-uppercase" id="pdfPreviewModalLabel">
+                    <i class="fas fa-file-pdf text-danger me-2"></i> Pratinjau Laporan Hasil Tes Psikotes
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
+                <iframe id="pdfPreviewIframe" src="about:blank" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="modal-footer bg-white p-3 d-flex justify-content-between">
+                <a id="btnOpenNewTab" href="#" target="_blank" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                    <i class="fas fa-external-link-alt me-1"></i> Buka di Tab Baru
+                </a>
+                <div>
+                    <button type="button" class="btn btn-secondary rounded-pill px-4 me-2" data-bs-dismiss="modal">Tutup</button>
+                    <a id="btnDownloadPdf" href="#" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="fas fa-download me-1"></i> Unduh File PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPdfPreviewModal(streamUrl, downloadUrl, title) {
+    document.getElementById('pdfPreviewModalLabel').innerHTML = '<i class="fas fa-file-pdf text-danger me-2"></i> ' + (title || 'Pratinjau Laporan Hasil Tes Psikotes');
+    document.getElementById('pdfPreviewIframe').src = streamUrl;
+    document.getElementById('btnOpenNewTab').href = streamUrl;
+    document.getElementById('btnDownloadPdf').href = downloadUrl;
+    
+    var myModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+    myModal.show();
+}
+</script>
+
 @endpush
 @endsection

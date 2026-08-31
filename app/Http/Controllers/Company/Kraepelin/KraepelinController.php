@@ -245,8 +245,12 @@ class KraepelinController extends Controller
             'endurance' => $test->ganker >= 0 ? 'Meningkat/Stabil' : 'Menurun (Mudah Lelah)'
         ];
 
-        $pdf = Pdf::loadView('company.applications.kraepelin_pdf', compact('application', 'test', 'analysis', 'siteSettings', 'logoBase64'));
-        return $pdf->setPaper('a4', 'portrait')->download('Laporan_Kraepelin_' . $application->user->name . '.pdf');
+        $pdf = Pdf::loadView('company.applications.kraepelin_pdf', compact('application', 'test', 'analysis', 'siteSettings', 'logoBase64'))->setPaper('a4', 'portrait');
+        $filename = 'Laporan_Kraepelin_' . $application->user->name . '.pdf';
+        if (request()->query('stream') == 1 || request()->query('preview') == 1) {
+            return $pdf->stream($filename);
+        }
+        return $pdf->download($filename);
     }
 
     private function getLabel($val, $low, $high)

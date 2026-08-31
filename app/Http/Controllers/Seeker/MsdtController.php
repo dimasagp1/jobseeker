@@ -156,7 +156,11 @@ class MsdtController extends Controller
             $logoBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
         }
 
-        $pdf = Pdf::loadView('company.applications.msdt_pdf', compact('application', 'msdtResult', 'siteSettings', 'logoBase64'));
-        return $pdf->setPaper('a4', 'portrait')->download('Laporan_MSDT_' . $application->user->name . '.pdf');
+        $pdf = Pdf::loadView('company.applications.msdt_pdf', compact('application', 'msdtResult', 'siteSettings', 'logoBase64'))->setPaper('a4', 'portrait');
+        $filename = 'Laporan_MSDT_' . $application->user->name . '.pdf';
+        if (request()->query('stream') == 1 || request()->query('preview') == 1) {
+            return $pdf->stream($filename);
+        }
+        return $pdf->download($filename);
     }
 }
