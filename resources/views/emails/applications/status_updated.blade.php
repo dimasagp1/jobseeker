@@ -125,11 +125,13 @@
             </div>
 
             <div class="content">
-                <div class="greeting">Halo, {{ $application->user->name }}!</div>
+                <div class="greeting" style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 15px;">
+                    Kepada Yth. Bapak/Ibu/Saudara/i {{ $application->user->name }},
+                </div>
 
                 @php
                     $jobTitle = $application->job->title ?? 'Posisi Pekerjaan';
-                    $companyName = $application->job->company->name ?? 'Perusahaan';
+                    $companyName = $application->job->company->company_name ?? $application->job->company->name ?? config('app.name');
                     $status = $application->status;
 
                     $badgeClass = match($status) {
@@ -145,56 +147,68 @@
 
                     $statusText = match($status) {
                         'pending' => 'Lamaran Berhasil Terkirim',
-                        'reviewed' => 'Lamaran Sedang Ditinjau HRD',
+                        'reviewed' => 'Lamaran Sedang Ditinjau',
                         'shortlisted' => 'Lolos Seleksi Berkas',
-                        'test_invited' => 'Diundang Mengikuti Tes Psikotes',
-                        'test_in_progress' => 'Sedang Mengerjakan Tes Seleksi',
-                        'test_completed' => 'Tes Seleksi Telah Selesai',
-                        'interview' => 'Diundang Tahap Wawancara',
-                        'accepted' => 'Selamat! Anda Diterima Kerja',
+                        'test_invited' => 'Undangan Tes Psikotes',
+                        'test_in_progress' => 'Sedang Mengerjakan Tes',
+                        'test_completed' => 'Tes Seleksi Selesai',
+                        'interview' => 'Undangan Wawancara Kerja',
+                        'accepted' => 'Diterima Bekerja',
                         'rejected' => 'Belum Lolos Seleksi',
                         default => ucfirst($status)
                     };
                 @endphp
 
-                <p>Ada pembaruan status pada lamaran pekerjaan yang Anda ajukan untuk posisi <strong>{{ $jobTitle }}</strong> di <strong>{{ $companyName }}</strong>.</p>
+                <p style="margin-bottom: 15px;">Dengan hormat,</p>
+                
+                <p>Melalui surat elektronik ini, kami dari Tim Rekrutmen <strong>{{ $companyName }}</strong> menyampaikan pemberitahuan mengenai status terkini dari lamaran pekerjaan yang Anda ajukan untuk posisi <strong>{{ $jobTitle }}</strong>.</p>
 
                 <div class="status-card">
-                    <div style="font-size: 13px; color: #64748b; font-weight: 600;">Status Terbaru:</div>
+                    <div style="font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Status Proses Rekrutmen:</div>
                     <span class="status-badge {{ $badgeClass }}">{{ $statusText }}</span>
                 </div>
 
                 @if($status === 'pending')
-                    <p>Lamaran Anda telah kami terima dan akan segera ditinjau oleh tim rekrutmen. Silakan pantau perkembangan lamaran Anda secara berkala melalui sistem.</p>
+                    <p>Terima kasih atas minat Anda untuk bergabung dengan <strong>{{ $companyName }}</strong>. Berkas pendaftaran dan dokumen pendukung Anda telah berhasil diterima dalam sistem rekrutmen kami dan akan segera ditinjau oleh Tim HRD.</p>
                 @elseif($status === 'reviewed')
-                    <p>Tim HRD saat ini sedang meninjau dokumen dan kualifikasi yang Anda kirimkan. Kami akan segera menginformasikan langkah seleksi selanjutnya.</p>
+                    <p>Kami menginformasikan bahwa berkas lamaran dan kualifikasi yang Anda kirimkan saat ini sedang dalam tahap peninjauan mendalam oleh Tim Rekrutmen dan Tim Manajemen terkait.</p>
                 @elseif($status === 'shortlisted')
-                    <p>Selamat! Kualifikasi Anda memenuhi syarat tahap awal dan berkas Anda berhasil lolos seleksi. Tim HRD akan segera menjadwalkan tahap tes atau wawancara.</p>
+                    <p>Dengan senang hati kami sampaikan bahwa berdasarkan hasil verifikasi awal, kualifikasi Anda dinilai sesuai dengan kriteria yang kami butuhkan dan Anda dinyatakan <strong>Lolos Seleksi Berkas</strong>.</p>
                 @elseif($status === 'test_invited')
-                    <p>Anda diundang untuk mengikuti tes asesmen/psikotes seleksi. Silakan masuk ke akun Anda untuk memulai tes pengerjaan online.</p>
+                    <p>Kami mengundang Anda untuk mengikuti tahapan Asesmen & Psikotes Seleksi secara online. Mohon dapat masuk ke akun portal rekrutmen Anda untuk mengakses dan menyelesaikan pelaksanaan tes sesuai dengan instruksi yang tersedia.</p>
                 @elseif($status === 'interview')
-                    <p>Selamat! Anda diundang untuk mengikuti sesi Wawancara Kerja. Silakan periksa rincian jadwal atau instruksi di bawah ini.</p>
+                    <p>Kami mengundang Anda untuk mengikuti tahapan Wawancara Kerja. Mohon cermati rincian jadwal, lokasi/media wawancara, serta petunjuk pelaksanaan yang kami sertakan pada bagian catatan di bawah ini.</p>
                 @elseif($status === 'accepted')
-                    <p>Selamat! Berdasarkan hasil seluruh rangkaian proses seleksi, Anda dinyatakan <strong>DITERIMA</strong> untuk posisi ini. Tim HRD akan menghubungi Anda lebih lanjut terkait proses penawaran kerja (Offering Letter) dan pengurusan berkas.</p>
+                    <p>Berdasarkan hasil dari seluruh rangkaian proses seleksi yang telah dilaksanakan, kami dengan bangga menyampaikan bahwa Anda dinyatakan <strong>DITERIMA BEKERJA</strong> untuk posisi <strong>{{ $jobTitle }}</strong> di <strong>{{ $companyName }}</strong>. Tim HRD kami akan segera menghubungi Anda terkait penawaran kerja (Offering Letter) serta prosedur administrasi penerimaan karyawan baru.</p>
                 @elseif($status === 'rejected')
-                    <p>Terima kasih atas minat dan partisipasi Anda melamar di perusahaan kami. Mohon maaf saat ini kualifikasi Anda belum sesuai dengan kebutuhan posisi ini. Jangan berkecil hati dan tetap semangat dalam mencari peluang karier berikutnya.</p>
+                    <p>Terima kasih atas partisipasi dan apresiasi Anda terhadap proses seleksi di <strong>{{ $companyName }}</strong>. Setelah melalui pertimbangan yang cermat, dengan berat hati kami menginformasikan bahwa saat ini kami belum dapat melanjutkan lamaran Anda ke tahapan berikutnya. Kami sangat mengapresiasi waktu serta usaha yang telah Anda berikan dan mendoakan kesuksesan bagi karier Anda di masa mendatang.</p>
                 @endif
 
                 @if(!empty($notes))
                     <div class="notes-box">
-                        <div class="notes-title">Catatan dari HRD / Perusahaan:</div>
+                        <div class="notes-title">Catatan Tambahan dari Tim Rekrutmen:</div>
                         <div style="white-space: pre-line; color: #1e3a8a;">{{ $notes }}</div>
                     </div>
                 @endif
 
+                <p style="margin-top: 20px;">Bapak/Ibu/Saudara/i dapat memantau rincian perkembangan lamaran secara berkala melalui tautan di bawah ini:</p>
+
                 <div class="btn-wrapper">
-                    <a href="{{ route('seeker.applications.show', $application->id) }}" class="btn">Lihat Detail Lamaran Saya</a>
+                    <a href="{{ route('seeker.applications.show', $application->id) }}" class="btn">Lihat Detail Lamaran</a>
+                </div>
+
+                <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; pt-3; padding-top: 20px; font-size: 14px;">
+                    <p class="mb-1">Atas perhatian dan kerja sama Anda, kami ucapkan terima kasih.</p>
+                    <br>
+                    <p class="mb-0">Hormat kami,</p>
+                    <p class="fw-bold mb-0" style="font-weight: 700; color: #1e293b;">Tim Rekrutmen & HRD</p>
+                    <p class="text-muted small mb-0" style="color: #64748b;">{{ $companyName }}</p>
                 </div>
             </div>
 
             <div class="footer">
-                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Portal Rekrutmen') }}. All rights reserved.</p>
-                <p>Email ini dikirimkan secara otomatis oleh sistem. Mohon tidak membalas email ini secara langsung.</p>
+                <p>&copy; {{ date('Y') }} {{ $companyName }}. All rights reserved.</p>
+                <p>Surat elektronik ini dikirimkan secara otomatis oleh sistem rekrutmen resmi. Mohon tidak membalas email ini secara langsung.</p>
             </div>
         </div>
     </div>
