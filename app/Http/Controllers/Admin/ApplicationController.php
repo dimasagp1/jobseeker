@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\Job;
 use App\Models\User;
+use App\Mail\ApplicationStatusUpdatedMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
@@ -120,6 +123,13 @@ class ApplicationController extends Controller
             'notes'        => $request->notes,
         ]);
 
+        try {
+            $application->load(['user', 'job.company']);
+            Mail::to($application->user->email)->send(new ApplicationStatusUpdatedMail($application, $request->notes));
+        } catch (\Exception $e) {
+            Log::warning('Gagal mengirim email status lamaran admin: ' . $e->getMessage());
+        }
+
         return redirect()->route('admin.applications.index')->with('success', 'Informasi lamaran telah diperbarui.');
     }
 
@@ -149,6 +159,13 @@ class ApplicationController extends Controller
         ]);
 
         $application->update(['status' => $request->status]);
+
+        try {
+            $application->load(['user', 'job.company']);
+            Mail::to($application->user->email)->send(new ApplicationStatusUpdatedMail($application, $application->notes));
+        } catch (\Exception $e) {
+            Log::warning('Gagal mengirim email update status admin: ' . $e->getMessage());
+        }
 
         $statusText = match($request->status) {
             'pending'          => 'Menunggu',

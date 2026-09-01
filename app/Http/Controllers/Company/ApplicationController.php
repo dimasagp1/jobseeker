@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\Company;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\ApplicationStatusUpdatedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
@@ -73,10 +76,18 @@ class ApplicationController extends Controller
                 'notes' => $request->notes ?? $application->notes
             ]);
 
+            // Kirim email pemberitahuan ke kandidat
+            try {
+                $application->load(['user', 'job.company']);
+                Mail::to($application->user->email)->send(new ApplicationStatusUpdatedMail($application, $request->notes));
+            } catch (\Exception $mailEx) {
+                Log::warning('Gagal mengirim email status lamaran ke pelamar: ' . $mailEx->getMessage());
+            }
+
             // Pastikan mengembalikan JSON dan status 200
             return response()->json([
                 'success' => true,
-                'message' => 'Status berhasil diperbarui ke ' . $application->status_label,
+                'message' => 'Status berhasil diperbarui ke ' . ($application->status_label ?? $application->status),
                 'data' => $application
             ], 200);
         } catch (\Exception $e) {

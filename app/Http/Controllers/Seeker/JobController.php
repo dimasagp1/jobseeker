@@ -7,8 +7,11 @@ use App\Models\Job;
 use App\Models\JobCategory;
 use App\Models\JobLocation;
 use App\Models\JobApplication;
+use App\Mail\ApplicationStatusUpdatedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class JobController extends Controller
@@ -174,13 +177,21 @@ class JobController extends Controller
         ]);
 
         // 5. Simpan Data ke Database
-        $user->applications()->create([
+        $application = $user->applications()->create([
             'job_id'            => $job->id,
             'cv_path'           => $cvPath,
             'cover_letter_path' => $clPath,
             'answers'           => $answers, 
             'status'            => 'pending'
         ]);
+
+        // 6. Kirim email pemberitahuan ke kandidat
+        try {
+            $application->load(['user', 'job.company']);
+            Mail::to($user->email)->send(new ApplicationStatusUpdatedMail($application));
+        } catch (\Exception $e) {
+            Log::warning('Gagal mengirim email konfirmasi lamaran: ' . $e->getMessage());
+        }
 
         return redirect()->route('seeker.applications.index')->with('success', 'Lamaran Anda berhasil dikirim ke perusahaan.');
     }
