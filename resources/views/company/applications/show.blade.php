@@ -214,22 +214,27 @@
     <div class="row g-4">
         @php
             $questions = [
-                'q1' => ['icon' => 'fa-user-shield', 'q' => 'Pernyataan Kejujuran Data'],
-                'q2' => ['icon' => 'fa-clock', 'q' => 'Ketersediaan Full-Time'],
-                'q3' => ['icon' => 'fa-map-marked-alt', 'q' => 'Kesediaan Relokasi'],
-                'q4' => ['icon' => 'fa-car', 'q' => 'Kepemilikan Kendaraan'],
-                'q5' => ['icon' => 'fa-money-bill-wave', 'q' => 'Ekspektasi Gaji Bulanan'],
-                'q15' => ['icon' => 'fa-calendar-check', 'q' => 'Tanggal Mulai Bergabung'],
-                'q6' => ['icon' => 'fa-tools', 'q' => 'Rating Skill Teknis'],
-                'q7' => ['icon' => 'fa-trophy', 'q' => 'Pencapaian Terbesar'],
-                'q13' => ['icon' => 'fa-bullseye', 'q' => 'Motivasi Melamar'],
-                'q14' => ['icon' => 'fa-rocket', 'q' => 'Visi Karier 3-5 Tahun']
+                'q1'  => ['icon' => 'fa-user-shield',     'q' => 'Pernyataan Kejujuran Data'],
+                'q2'  => ['icon' => 'fa-clock',           'q' => 'Ketersediaan Full-Time'],
+                'q3'  => ['icon' => 'fa-map-marked-alt',  'q' => 'Kesediaan Relokasi'],
+                'q4'  => ['icon' => 'fa-car',             'q' => 'Kepemilikan Kendaraan'],
+                'q5'  => ['icon' => 'fa-money-bill-wave', 'q' => 'Ekspektasi Gaji Bulanan'],
+                'q15' => ['icon' => 'fa-calendar-check',  'q' => 'Tanggal Mulai Bergabung'],
+                'q6'  => ['icon' => 'fa-tools',           'q' => 'Rating Skill Teknis'],
+                'q7'  => ['icon' => 'fa-trophy',          'q' => 'Pencapaian Terbesar'],
+                'q8'  => ['icon' => 'fa-star',            'q' => 'Keahlian Spesifik Utama'],
+                'q9'  => ['icon' => 'fa-users',           'q' => 'Preferensi Gaya Kerja'],
+                'q10' => ['icon' => 'fa-building',        'q' => 'Budaya Kerja Memotivasi'],
+                'q11' => ['icon' => 'fa-comments',        'q' => 'Sikap Terhadap Kritik'],
+                'q12' => ['icon' => 'fa-handshake',       'q' => 'Penanganan Perbedaan Pendapat'],
+                'q13' => ['icon' => 'fa-bullseye',        'q' => 'Motivasi Melamar'],
+                'q14' => ['icon' => 'fa-rocket',          'q' => 'Visi Karier 1-3 Tahun']
             ];
         @endphp
 
         @foreach($questions as $key => $data)
             @if(isset($application->answers[$key]))
-                <div class="{{ in_array($key, ['q7','q13','q14']) ? 'col-12' : 'col-md-6' }}">
+                <div class="{{ in_array($key, ['q7','q8','q10','q11','q12','q13','q14']) ? 'col-12' : 'col-md-6' }}">
                     <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background: #f8fafc; border: 1px solid #e2e8f0 !important;">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center mb-3">
