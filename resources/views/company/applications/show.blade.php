@@ -1149,11 +1149,29 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
         interviewModal.hide();
     }
     function submitStatusUpdate(appId, status, notes = null) {
-        document.getElementById('status-spinner').classList.remove('d-none');
+        document.getElementById('status-spinner')?.classList.remove('d-none');
+        const overlay = document.getElementById('email-loading-overlay');
+        if (overlay) {
+            overlay.classList.remove('d-none');
+            overlay.style.display = 'flex';
+        }
         axios.put(`/company/applications/${appId}/status`, { status, notes })
-        .then(res => { if (res.data.success) { location.reload(); } })
-        .catch(err => { alert('Gagal!'); document.getElementById('status-selector').value = oldStatus; })
-        .finally(() => document.getElementById('status-spinner').classList.add('d-none'));
+        .then(res => { 
+            if (res.data.success) { 
+                location.reload(); 
+            } 
+        })
+        .catch(err => { 
+            alert('Gagal memperbarui status: ' + (err.response?.data?.message || 'Terjadi kesalahan')); 
+            if (typeof oldStatus !== 'undefined' && document.getElementById('status-selector')) {
+                document.getElementById('status-selector').value = oldStatus; 
+            }
+            if (overlay) {
+                overlay.classList.add('d-none');
+                overlay.style.display = 'none';
+            }
+        })
+        .finally(() => document.getElementById('status-spinner')?.classList.add('d-none'));
     }
 
     // --- INISIALISASI SEMUA CHART PSIKOTES ---
@@ -1318,6 +1336,17 @@ function openPdfPreviewModal(streamUrl, downloadUrl, title) {
     myModal.show();
 }
 </script>
+
+{{-- MODAL / OVERLAY LOADING PENGIRIMAN EMAIL --}}
+<div id="email-loading-overlay" class="d-none" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.85); z-index: 99999; backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; color: #fff; text-align: center;">
+    <div style="background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 35px 30px; max-width: 440px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+        <div class="spinner-border text-primary mb-4" style="width: 3.5rem; height: 3.5rem; border-width: 4px;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 class="fw-bold mb-2 text-white">Memperbarui Status & Mengirimkan Email...</h5>
+        <p class="text-white-50 small mb-0">Mohon tunggu sebentar, status lamaran sedang diperbarui dan email pemberitahuan sedang dikirimkan ke pelamar.</p>
+    </div>
+</div>
 
 @endpush
 @endsection
