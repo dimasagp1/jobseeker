@@ -399,14 +399,86 @@
     });
 </script>
 
-{{-- MODAL / OVERLAY LOADING PENGIRIMAN EMAIL --}}
-<div id="email-loading-overlay" class="d-none" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.85); z-index: 99999; backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; color: #fff; text-align: center;">
-    <div style="background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 35px 30px; max-width: 440px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
-        <div class="spinner-border text-primary mb-4" style="width: 3.5rem; height: 3.5rem; border-width: 4px;" role="status">
-            <span class="visually-hidden">Loading...</span>
+<style>
+    .pulse-loader-dots {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 60px;
+    }
+    .pulse-loader-dots .dot {
+        width: 18px;
+        height: 18px;
+        background-color: #3b82f6;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse-bounce 1.4s infinite ease-in-out both;
+        box-shadow: 0 0 14px rgba(59, 130, 246, 0.7);
+    }
+    .pulse-loader-dots .dot-1 { animation-delay: -0.32s; background-color: #2563eb; }
+    .pulse-loader-dots .dot-2 { animation-delay: -0.16s; background-color: #3b82f6; }
+    .pulse-loader-dots .dot-3 { animation-delay: 0s; background-color: #60a5fa; }
+
+    @keyframes pulse-bounce {
+        0%, 80%, 100% { 
+            transform: scale(0.5);
+            opacity: 0.3;
+        } 
+        40% { 
+            transform: scale(1.3);
+            opacity: 1;
+        }
+    }
+
+    .checkmark-circle-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #ffffff;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45);
+        animation: pop-checkmark 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes pop-checkmark {
+        0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+        70% { transform: scale(1.15) rotate(10deg); opacity: 1; }
+        100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+</style>
+
+{{-- MODAL / OVERLAY LOADING PENGIRIMAN EMAIL KREATIF --}}
+<div id="email-loading-overlay" class="d-none" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.88); z-index: 99999; backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; color: #fff; text-align: center;">
+    <div style="background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255,255,255,0.18); border-radius: 24px; padding: 40px 35px; max-width: 450px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);">
+        
+        {{-- State 1: Animated Bouncing Dots --}}
+        <div id="loader-state-processing">
+            <div class="d-flex justify-content-center align-items-center mb-4">
+                <div class="pulse-loader-dots">
+                    <span class="dot dot-1"></span>
+                    <span class="dot dot-2"></span>
+                    <span class="dot dot-3"></span>
+                </div>
+            </div>
+            <h5 class="fw-bold mb-2 text-white" id="loading-overlay-title">Mengirimkan Lamaran & Email...</h5>
+            <p class="text-white-50 small mb-0" id="loading-overlay-desc">Mohon tunggu sebentar, data lamaran dan berkas Anda sedang diproses serta email konfirmasi sedang dikirimkan ke email Anda.</p>
         </div>
-        <h5 class="fw-bold mb-2 text-white">Mengirimkan Lamaran & Email...</h5>
-        <p class="text-white-50 small mb-0">Mohon tunggu sebentar, data lamaran dan berkas Anda sedang diproses serta email konfirmasi sedang dikirimkan ke email Anda.</p>
+
+        {{-- State 2: Checkmark Icon Success --}}
+        <div id="loader-state-success" class="d-none">
+            <div class="d-flex justify-content-center mb-3">
+                <div class="checkmark-circle-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+            <h4 class="fw-bold text-white mb-2">Lamaran Berhasil Terkirim!</h4>
+            <p class="text-white-50 small mb-0">Email konfirmasi telah dikirimkan ke kotak masuk Anda.</p>
+        </div>
+
     </div>
 </div>
 @endsection
