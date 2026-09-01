@@ -81,8 +81,8 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label-custom">SURAT LAMARAN (COVER LETTER)</label>
-                                    <input type="file" name="cover_letter_file" class="form-control input-custom" required>
+                                    <label class="form-label-custom">SURAT LAMARAN (COVER LETTER) <span class="text-muted fw-normal text-transform-none" style="text-transform: none;">(Opsional)</span></label>
+                                    <input type="file" name="cover_letter_file" class="form-control input-custom">
                                 </div>
                             </div>
 

@@ -150,7 +150,7 @@ class JobController extends Controller
         // 2. Validasi Input
         $request->validate([
             'resume'            => 'required_without:use_existing_resume|file|mimes:pdf,doc,docx|max:5120',
-            'cover_letter_file' => 'required|file|mimes:pdf,doc,docx|max:5120',
+            'cover_letter_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
             'q1' => 'required', 'q2' => 'required', 'q3' => 'required', 'q4' => 'required', 'q5' => 'required|numeric',
             'q6' => 'required', 'q7' => 'required', 'q8' => 'required', 'q9' => 'required', 'q10' => 'required',
             'q11' => 'required', 'q12' => 'required', 'q13' => 'required', 'q14' => 'required', 'q15' => 'required|date',
@@ -163,7 +163,10 @@ class JobController extends Controller
             $cvPath = $request->file('resume')->store('resumes', 'public');
         }
 
-        $clPath = $request->file('cover_letter_file')->store('cover_letters', 'public');
+        $clPath = null;
+        if ($request->hasFile('cover_letter_file')) {
+            $clPath = $request->file('cover_letter_file')->store('cover_letters', 'public');
+        }
 
         // 4. Mapping Jawaban Kuesioner (q1 - q15)
         $answers = $request->only([
