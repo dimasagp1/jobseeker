@@ -91,14 +91,14 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|in:admin,company,seeker',
-            'is_active' => 'boolean',
+            'is_active' => 'nullable',
         ]);
 
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
-            'is_active' => $request->has('is_active'),
+            'is_active' => $request->boolean('is_active'),
         ];
 
         if ($request->filled('password')) {

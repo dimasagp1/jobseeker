@@ -79,6 +79,17 @@
                     @method('PUT')
                     
                     <div class="card-body p-4 p-md-5">
+                        @if ($errors->any())
+                            <div class="alert alert-danger mb-4 rounded-3">
+                                <h6 class="fw-bold mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Terjadi Kesalahan Validasi:</h6>
+                                <ul class="mb-0 pl-3">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="row g-4">
                             {{-- Kolom Kiri: Profil Dasar --}}
                             <div class="col-md-6">
@@ -108,7 +119,7 @@
 
                                 <div class="form-group mt-4">
                                     <div class="custom-control custom-switch custom-switch-lg">
-                                        <input type="checkbox" class="custom-control-input" id="isActive" name="is_active" {{ $user->is_active ? 'checked' : '' }}>
+                                        <input type="checkbox" class="custom-control-input" id="isActive" name="is_active" value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }}>
                                         <label class="custom-control-label fw-bold" for="isActive" style="cursor: pointer;">Status Akun Aktif</label>
                                         <small class="text-muted d-block">Nonaktifkan jika ingin mencabut akses pengguna ini sementara waktu.</small>
                                     </div>
