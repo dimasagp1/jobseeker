@@ -116,7 +116,7 @@
                             </p>
                             
                             <div class="d-grid mt-3">
-                                <a href="{{ route('public.jobs.show', $job->id) }}" class="btn btn-outline-primary fw-bold py-2 rounded-3 hover-filled">
+                                <a href="{{ route('public.jobs.show', $job->slug ?? $job->id) }}" class="btn btn-outline-primary fw-bold py-2 rounded-3 hover-filled">
                                     Lihat Detail <i class="fas fa-arrow-right ms-2 small"></i>
                                 </a>
                             </div>

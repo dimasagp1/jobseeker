@@ -73,7 +73,7 @@
                 </div>
                 <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center pb-3">
                     <small class="text-muted">Dipasang {{ $job->created_at->diffForHumans() }}</small>
-                    <a href="{{ route('public.jobs.show', $job->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">Lihat Detail</a>
+                    <a href="{{ route('public.jobs.show', $job->slug ?? $job->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">Lihat Detail</a>
                 </div>
             </div>
         </div>

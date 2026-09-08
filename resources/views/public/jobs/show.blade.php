@@ -70,8 +70,7 @@
                     <div class="d-grid gap-2">
                         @auth
                             @if(auth()->user()->role == 'seeker')
-                                {{-- Check if already applied logic could be added here --}}
-                                <a href="#" class="btn btn-primary btn-lg">Lamar Sekarang</a>
+                                <a href="{{ route('seeker.jobs.apply.form', $job->id) }}" class="btn btn-primary btn-lg">Lamar Sekarang</a>
                             @else
                                 <div class="alert alert-info small">Masuk sebagai Pencari Kerja untuk melamar.</div>
                             @endif
@@ -84,10 +83,11 @@
                     <div class="mt-4 text-center">
                         <p class="small text-muted mb-2">Bagikan lowongan ini:</p>
                         <div class="d-flex justify-content-center gap-2">
-                            <button class="btn btn-sm btn-outline-primary rounded-circle"><i class="fab fa-facebook-f"></i></button>
-                            <button class="btn btn-sm btn-outline-info rounded-circle"><i class="fab fa-twitter"></i></button>
-                            <button class="btn btn-sm btn-outline-primary rounded-circle"><i class="fab fa-linkedin-in"></i></button>
-                            <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="copyToClipboard('{{ route('public.jobs.show', $job->id) }}')" title="Salin Tautan"><i class="fas fa-link"></i></button>
+                            <a href="https://wa.me/?text={{ urlencode('Lowongan Kerja ' . $job->title . ' di ' . ($job->company->company_name ?? 'HerbaTech') . ': ' . route('public.jobs.show', $job->slug ?? $job->id)) }}" target="_blank" class="btn btn-sm btn-outline-success rounded-circle" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('public.jobs.show', $job->slug ?? $job->id)) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-circle" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('public.jobs.show', $job->slug ?? $job->id)) }}&text={{ urlencode('Lowongan: ' . $job->title) }}" target="_blank" class="btn btn-sm btn-outline-info rounded-circle" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('public.jobs.show', $job->slug ?? $job->id)) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-circle" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle" onclick="copyToClipboard('{{ route('public.jobs.show', $job->slug ?? $job->id) }}')" title="Salin Tautan"><i class="fas fa-link"></i></button>
                         </div>
                     </div>
                 </div>
