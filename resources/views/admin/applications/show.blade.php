@@ -87,6 +87,9 @@
                             'pending' => 'Menunggu',
                             'reviewed' => 'Ditinjau',
                             'shortlisted' => 'Terpilih',
+                            'test_invited' => 'Undangan Tes',
+                            'test_in_progress' => 'Mengerjakan Tes',
+                            'test_completed' => 'Tes Selesai',
                             'interview' => 'Wawancara',
                             'accepted' => 'Diterima',
                             'rejected' => 'Ditolak',
@@ -97,12 +100,19 @@
 
                 <div class="mb-4">
                     <div class="fw-bold text-muted small text-uppercase mb-2" style="font-size: 0.7rem;">Status Psikotes</div>
-                    <div class="d-flex gap-2 justify-content-center">
+                    <div class="d-flex gap-2 justify-content-center mb-3">
                         <span class="psy-badge {{ $hasKraepelin ? 'bg-primary text-white' : 'bg-light text-muted border' }}" title="Kraepelin">KRA</span>
                         <span class="psy-badge {{ $discResult ? 'bg-success text-white' : 'bg-light text-muted border' }}" title="DISC">DSC</span>
                         <span class="psy-badge {{ $msdtResult ? 'bg-danger text-white' : 'bg-light text-muted border' }}" title="MSDT">MSD</span>
                         <span class="psy-badge {{ $papiResult ? 'bg-info text-white' : 'bg-light text-muted border' }}" title="PAPI Kostick">PAP</span>
                     </div>
+                    @if($hasKraepelin || $discResult || $msdtResult || $papiResult)
+                        <a href="{{ route('admin.applications.all-psychological-pdf', $application->id) }}" 
+                           onclick="openPdfPreviewModal('{{ route('admin.applications.all-psychological-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.all-psychological-pdf', $application->id) }}', 'Pratinjau Laporan Lengkap Psikotes'); return false;" 
+                           class="btn btn-danger btn-sm w-100 rounded-pill fw-bold shadow-sm">
+                            <i class="fas fa-file-pdf me-1"></i> Unduh Hasil Semua Tes (1 File)
+                        </a>
+                    @endif
                 </div>
 
                 <div class="text-left mt-4 border-top pt-4">
@@ -128,6 +138,9 @@
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" id="tab-profile-btn" data-bs-toggle="tab" data-bs-target="#tab-profile" type="button" role="tab"><i class="fas fa-user-circle mr-1"></i> Profil</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="tab-kuesioner-btn" data-bs-toggle="tab" data-bs-target="#tab-kuesioner" type="button" role="tab"><i class="fas fa-poll-h mr-1"></i> Kuesioner</button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" id="tab-internal-btn" data-bs-toggle="tab" data-bs-target="#tab-internal" type="button" role="tab"><i class="fas fa-clipboard-check mr-1"></i> Catatan</button>
@@ -198,6 +211,88 @@
                             @endif
                         </div>
 
+                        <div class="tab-pane fade" id="tab-kuesioner" role="tabpanel">
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-dark mb-1"><i class="fas fa-poll-h text-primary me-2"></i>Hasil Kuesioner Pra-Seleksi</h6>
+                                <p class="text-muted small">Jawaban yang diisi oleh pelamar saat mengajukan lamaran pekerjaan.</p>
+                            </div>
+
+                            @if(!empty($application->answers) && is_array($application->answers))
+                                @php
+                                    $questions = [
+                                        'q1'  => ['icon' => 'fa-user-shield',     'q' => 'Pernyataan Kejujuran Data'],
+                                        'q2'  => ['icon' => 'fa-clock',           'q' => 'Ketersediaan Full-Time'],
+                                        'q3'  => ['icon' => 'fa-map-marked-alt',  'q' => 'Kesediaan Relokasi'],
+                                        'q4'  => ['icon' => 'fa-car',             'q' => 'Kepemilikan Kendaraan'],
+                                        'q5'  => ['icon' => 'fa-money-bill-wave', 'q' => 'Ekspektasi Gaji Bulanan'],
+                                        'q15' => ['icon' => 'fa-calendar-check',  'q' => 'Tanggal Mulai Bergabung'],
+                                        'q6'  => ['icon' => 'fa-tools',           'q' => 'Rating Skill Teknis'],
+                                        'q7'  => ['icon' => 'fa-trophy',          'q' => 'Pencapaian Terbesar'],
+                                        'q8'  => ['icon' => 'fa-star',            'q' => 'Keahlian Spesifik Utama'],
+                                        'q9'  => ['icon' => 'fa-users',           'q' => 'Preferensi Gaya Kerja'],
+                                        'q10' => ['icon' => 'fa-building',        'q' => 'Budaya Kerja Memotivasi'],
+                                        'q11' => ['icon' => 'fa-comments',        'q' => 'Sikap Terhadap Kritik'],
+                                        'q12' => ['icon' => 'fa-handshake',       'q' => 'Penanganan Perbedaan Pendapat'],
+                                        'q13' => ['icon' => 'fa-bullseye',        'q' => 'Motivasi Melamar'],
+                                        'q14' => ['icon' => 'fa-rocket',          'q' => 'Visi Karier 1-3 Tahun']
+                                    ];
+                                @endphp
+
+                                <div class="row g-3">
+                                    @foreach($questions as $key => $data)
+                                        @if(isset($application->answers[$key]))
+                                            <div class="{{ in_array($key, ['q7','q8','q10','q11','q12','q13','q14']) ? 'col-12' : 'col-md-6' }} mb-3">
+                                                <div class="card border-0 shadow-sm h-100" style="border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0 !important;">
+                                                    <div class="card-body p-3">
+                                                        <div class="d-flex align-items-center mb-2">
+                                                            <div class="flex-shrink-0 bg-white shadow-sm d-flex align-items-center justify-content-center rounded-3 me-2" style="width: 36px; height: 36px;">
+                                                                <i class="fas {{ $data['icon'] }} text-primary"></i>
+                                                            </div>
+                                                            <div>
+                                                                <div class="text-uppercase fw-bold text-muted" style="font-size: 0.65rem; letter-spacing: 0.5px;">Pertanyaan {{ strtoupper($key) }}</div>
+                                                                <div class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $data['q'] }}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="bg-white p-3 rounded-3 border border-light shadow-sm mt-2">
+                                                            @if($key === 'q5')
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-bold" style="font-size: 0.95rem;">
+                                                                        Rp {{ number_format($application->answers[$key], 0, ',', '.') }}
+                                                                    </span>
+                                                                    <span class="ms-2 text-muted small">/ bulan</span>
+                                                                </div>
+                                                            @elseif($key === 'q15')
+                                                                <div class="d-flex align-items-center text-primary fw-bold">
+                                                                    <i class="far fa-calendar-alt me-2"></i>
+                                                                    {{ \Carbon\Carbon::parse($application->answers[$key])->translatedFormat('d F Y') }}
+                                                                </div>
+                                                            @elseif($key === 'q6')
+                                                                <div class="progress" style="height: 8px; border-radius: 10px; background: #f1f5f9; width: 100%;">
+                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $application->answers[$key] * 10 }}%"></div>
+                                                                </div>
+                                                                <div class="mt-2 fw-bold text-primary small">{{ $application->answers[$key] }} / 10</div>
+                                                            @else
+                                                                <p class="mb-0 text-secondary" style="font-size: 0.9rem; line-height: 1.5; white-space: pre-line;">
+                                                                    {{ $application->answers[$key] }}
+                                                                </p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-center py-5 border rounded-4 bg-light" style="border-style: dashed;">
+                                    <i class="fas fa-clipboard-list fa-3x text-muted opacity-25 mb-3"></i>
+                                    <h6 class="fw-bold text-muted">Tidak Ada Data Kuesioner</h6>
+                                    <p class="small text-muted mb-0">Pelamar ini tidak mengisi atau tidak memiliki data kuesioner pra-seleksi.</p>
+                                </div>
+                            @endif
+                        </div>
+
                         <div class="tab-pane fade" id="tab-internal" role="tabpanel">
                             <div class="mb-4">
                                 <h6 class="fw-bold text-dark mb-3"><i class="fas fa-envelope-open-text text-warning mr-2"></i>Surat Lamaran (Cover Letter)</h6>
@@ -252,7 +347,9 @@
                                 
                                 {{-- Tombol Export Kraepelin tetap ada --}}
                                 @if(Route::has('admin.applications.kraepelin-pdf'))
-                                <a href="{{ route('admin.applications.kraepelin-pdf', $application->id) }}" class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm" target="_blank"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                <a href="{{ route('admin.applications.kraepelin-pdf', $application->id) }}" 
+                                   onclick="openPdfPreviewModal('{{ route('admin.applications.kraepelin-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.kraepelin-pdf', $application->id) }}', 'Pratinjau Kraepelin Assessment'); return false;" 
+                                   class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
                                 @endif
                             </div>
 
@@ -305,7 +402,11 @@
                             @endphp
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">Evaluasi Psikologi DISC</h5><p class="small text-muted mb-0">Pemetaan perilaku, komunikasi, dan adaptasi kerja.</p></div>
-                                {{-- Tombol Export Dihapus --}}
+                                @if(Route::has('admin.applications.disc-pdf'))
+                                <a href="{{ route('admin.applications.disc-pdf', $application->id) }}" 
+                                   onclick="openPdfPreviewModal('{{ route('admin.applications.disc-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.disc-pdf', $application->id) }}', 'Pratinjau Evaluasi Perilaku DISC'); return false;" 
+                                   class="btn btn-outline-success rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                @endif
                             </div>
                             <div class="row g-4">
                                 <div class="col-md-7">
@@ -349,7 +450,11 @@
                             @endphp
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">MSDT Kepemimpinan</h5><p class="small text-muted mb-0">Orientasi Tugas (TO) vs Relasi (RO).</p></div>
-                                {{-- Tombol Export Dihapus --}}
+                                @if(Route::has('admin.applications.msdt-pdf'))
+                                <a href="{{ route('admin.applications.msdt-pdf', $application->id) }}" 
+                                   onclick="openPdfPreviewModal('{{ route('admin.applications.msdt-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.msdt-pdf', $application->id) }}', 'Pratinjau Laporan MSDT Kepemimpinan'); return false;" 
+                                   class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                @endif
                             </div>
                             <div class="card bg-danger text-white mb-4 border-0 shadow-sm rounded-lg">
                                 <div class="card-body p-4 text-center">
@@ -385,7 +490,11 @@
                             @endphp
                             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                 <div><h5 class="fw-bold mb-1">PAPI Kostick</h5><p class="small text-muted mb-0">Pemetaan peran kerja dan kebutuhan psikologis.</p></div>
-                                {{-- Tombol Export Dihapus --}}
+                                @if(Route::has('admin.applications.papi-pdf'))
+                                <a href="{{ route('admin.applications.papi-pdf', $application->id) }}" 
+                                   onclick="openPdfPreviewModal('{{ route('admin.applications.papi-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('admin.applications.papi-pdf', $application->id) }}', 'Pratinjau Laporan PAPI Kostick'); return false;" 
+                                   class="btn btn-outline-info rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-file-pdf mr-1"></i> Ekspor Laporan</a>
+                                @endif
                             </div>
                             <div class="kraepelin-card shadow-sm border-0 bg-white p-4 rounded-lg">
                                 <h6 class="fw-bold mb-3 text-center text-dark"><i class="fas fa-spider mr-2 text-info"></i>Peta Kepribadian (Radar Chart)</h6>
@@ -479,6 +588,46 @@
         });
     }
     @endif
+</script>
+
+<!-- MODAL POPUP PREVIEW PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 92vw; height: 90vh;">
+        <div class="modal-content h-100 border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header bg-dark text-white p-3">
+                <h5 class="modal-title fw-bold small text-uppercase" id="pdfPreviewModalLabel">
+                    <i class="fas fa-file-pdf text-danger me-2"></i> Pratinjau Laporan Hasil Tes Psikotes
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
+                <iframe id="pdfPreviewIframe" src="about:blank" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="modal-footer bg-white p-3 d-flex justify-content-between">
+                <a id="btnOpenNewTab" href="#" target="_blank" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                    <i class="fas fa-external-link-alt me-1"></i> Buka di Tab Baru
+                </a>
+                <div>
+                    <button type="button" class="btn btn-secondary rounded-pill px-4 me-2" data-bs-dismiss="modal">Tutup</button>
+                    <a id="btnDownloadPdf" href="#" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="fas fa-download me-1"></i> Unduh File PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPdfPreviewModal(streamUrl, downloadUrl, title) {
+    document.getElementById('pdfPreviewModalLabel').innerHTML = '<i class="fas fa-file-pdf text-danger me-2"></i> ' + (title || 'Pratinjau Laporan Hasil Tes Psikotes');
+    document.getElementById('pdfPreviewIframe').src = streamUrl;
+    document.getElementById('btnOpenNewTab').href = streamUrl;
+    document.getElementById('btnDownloadPdf').href = downloadUrl;
+    
+    var myModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+    myModal.show();
+}
 </script>
 
 @endsection

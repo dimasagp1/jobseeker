@@ -15,7 +15,7 @@ require __DIR__ . '/auth.php';
 // ------------------------------------------------------------------
 Route::get('/', function () {
     \App\Models\Job::closeExpiredJobs();
-    $jobs = \App\Models\Job::with('company')->active()->latest()->paginate(12);
+    $jobs = \App\Models\Job::with('company')->withCount('applications')->active()->latest()->paginate(12);
     $company = \App\Models\Company::first();
     return view('welcome', compact('jobs', 'company'));
 });
@@ -76,6 +76,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:ad
     Route::get('applications/{application}/msdt-pdf', [\App\Http\Controllers\Seeker\MsdtController::class, 'exportPdf'])->name('applications.msdt-pdf');
     Route::get('applications/{application}/papi-pdf', [\App\Http\Controllers\Seeker\PapiController::class, 'exportPdf'])->name('applications.papi-pdf');
     Route::get('applications/{application}/disc-pdf', [\App\Http\Controllers\Seeker\DiscController::class, 'exportPdf'])->name('applications.disc-pdf');
+    Route::get('applications/{application}/all-psychological-pdf', [\App\Http\Controllers\Company\ApplicationController::class, 'downloadPsychologicalPdf'])->name('applications.all-psychological-pdf');
     // Route legacy jika admin masih mengakses dari luar tab
     Route::get('kraepelin/{id}', [\App\Http\Controllers\Company\Kraepelin\KraepelinController::class, 'exportPdf'])->name('kraepelin.show');
 
@@ -115,6 +116,7 @@ Route::prefix('company')->name('company.')->middleware(['auth', 'verified', 'rol
     Route::get('applications/{application}/msdt-pdf', [\App\Http\Controllers\Seeker\MsdtController::class, 'exportPdf'])->name('applications.msdt-pdf');
     Route::get('applications/{application}/papi-pdf', [\App\Http\Controllers\Seeker\PapiController::class, 'exportPdf'])->name('applications.papi-pdf');
     Route::get('applications/{application}/disc-pdf', [\App\Http\Controllers\Seeker\DiscController::class, 'exportPdf'])->name('applications.disc-pdf');
+    Route::get('applications/{application}/all-psychological-pdf', [\App\Http\Controllers\Company\ApplicationController::class, 'downloadPsychologicalPdf'])->name('applications.all-psychological-pdf');
 });
 
 // ------------------------------------------------------------------

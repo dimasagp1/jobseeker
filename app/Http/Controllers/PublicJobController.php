@@ -13,7 +13,7 @@ class PublicJobController extends Controller
     {
         Job::closeExpiredJobs();
 
-        $query = Job::with('company')->active();
+        $query = Job::with('company')->withCount('applications')->active();
 
         if ($request->filled('keyword')) {
             $query->where(function ($q) use ($request) {
@@ -41,9 +41,14 @@ class PublicJobController extends Controller
         return view('public.jobs.index', compact('jobs', 'categories', 'locations'));
     }
 
-    public function show(Job $job)
+    public function show($job)
     {
         Job::closeExpiredJobs();
+
+        $job = Job::with(['company', 'category', 'location'])
+            ->where('slug', $job)
+            ->orWhere('id', $job)
+            ->firstOrFail();
 
         if (!$job->isActive()) {
             abort(404);

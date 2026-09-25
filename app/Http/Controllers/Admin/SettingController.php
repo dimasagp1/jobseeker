@@ -51,6 +51,8 @@ class SettingController extends Controller
             'industry'            => 'nullable|string|max:255',
             'company_size'        => 'nullable|integer|min:1',
             'company_website'     => 'nullable|url|max:255',
+            'pdf_header_title'    => 'nullable|string|max:255',
+            'pdf_header_subtitle' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('company_logo')) {

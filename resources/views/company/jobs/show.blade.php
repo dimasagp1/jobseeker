@@ -168,7 +168,7 @@
                             </tr>
                             <tr class="border-bottom">
                                 <td class="py-3 text-muted fw-medium" style="font-size: 0.9rem;">Level Pengalaman</td>
-                                <td class="py-3 fw-bold text-end text-dark">{{ $job->experience_level }}</td>
+                                <td class="py-3 fw-bold text-end text-dark">{{ $job->formatted_experience_level }}</td>
                             </tr>
                             <tr>
                                 <td class="py-3 text-muted fw-medium" style="font-size: 0.9rem;">Kebutuhan Personel</td>

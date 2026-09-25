@@ -7,8 +7,11 @@ use App\Models\Job;
 use App\Models\JobCategory;
 use App\Models\JobLocation;
 use App\Models\JobApplication;
+use App\Mail\ApplicationStatusUpdatedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class JobController extends Controller
@@ -20,7 +23,7 @@ class JobController extends Controller
     {
         Job::closeExpiredJobs();
 
-        $query = Job::with('company')->active();
+        $query = Job::with('company')->withCount('applications')->active();
 
         // Filter berdasarkan keyword (Judul Pekerjaan atau Nama Perusahaan)
         if ($request->filled('keyword')) {
@@ -150,7 +153,7 @@ class JobController extends Controller
         // 2. Validasi Input
         $request->validate([
             'resume'            => 'required_without:use_existing_resume|file|mimes:pdf,doc,docx|max:5120',
-            'cover_letter_file' => 'required|file|mimes:pdf,doc,docx|max:5120',
+            'cover_letter_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
             'q1' => 'required', 'q2' => 'required', 'q3' => 'required', 'q4' => 'required', 'q5' => 'required|numeric',
             'q6' => 'required', 'q7' => 'required', 'q8' => 'required', 'q9' => 'required', 'q10' => 'required',
             'q11' => 'required', 'q12' => 'required', 'q13' => 'required', 'q14' => 'required', 'q15' => 'required|date',
@@ -163,7 +166,10 @@ class JobController extends Controller
             $cvPath = $request->file('resume')->store('resumes', 'public');
         }
 
-        $clPath = $request->file('cover_letter_file')->store('cover_letters', 'public');
+        $clPath = null;
+        if ($request->hasFile('cover_letter_file')) {
+            $clPath = $request->file('cover_letter_file')->store('cover_letters', 'public');
+        }
 
         // 4. Mapping Jawaban Kuesioner (q1 - q15)
         $answers = $request->only([
@@ -171,13 +177,21 @@ class JobController extends Controller
         ]);
 
         // 5. Simpan Data ke Database
-        $user->applications()->create([
+        $application = $user->applications()->create([
             'job_id'            => $job->id,
             'cv_path'           => $cvPath,
             'cover_letter_path' => $clPath,
             'answers'           => $answers, 
             'status'            => 'pending'
         ]);
+
+        // 6. Kirim email pemberitahuan ke kandidat
+        try {
+            $application->load(['user', 'job.company']);
+            Mail::to($user->email)->send(new ApplicationStatusUpdatedMail($application));
+        } catch (\Exception $e) {
+            Log::warning('Gagal mengirim email konfirmasi lamaran: ' . $e->getMessage());
+        }
 
         return redirect()->route('seeker.applications.index')->with('success', 'Lamaran Anda berhasil dikirim ke perusahaan.');
     }

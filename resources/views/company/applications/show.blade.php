@@ -98,8 +98,16 @@
                 </div>
 
                 @if($application->cv_path)
-                    <a href="{{ route('company.applications.download-cv', $application->id) }}" class="btn btn-outline-primary w-100 fw-bold py-2 mb-3 shadow-sm" style="border-radius: 10px;">
+                    <a href="{{ route('company.applications.download-cv', $application->id) }}" class="btn btn-outline-primary w-100 fw-bold py-2 mb-2 shadow-sm" style="border-radius: 10px;">
                         <i class="fas fa-file-download me-2"></i> Download CV / Resume
+                    </a>
+                @endif
+
+                @if($hasKraepelin || $discResult || $msdtResult || $papiResult)
+                    <a href="{{ route('company.applications.all-psychological-pdf', $application->id) }}" 
+                       onclick="openPdfPreviewModal('{{ route('company.applications.all-psychological-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.all-psychological-pdf', $application->id) }}', 'Pratinjau Laporan Lengkap Psikotes'); return false;" 
+                       class="btn btn-danger w-100 fw-bold py-2 mb-3 shadow-sm" style="border-radius: 10px;">
+                        <i class="fas fa-file-pdf me-2"></i> Unduh Hasil Semua Tes (1 File)
                     </a>
                 @endif
                 
@@ -206,22 +214,27 @@
     <div class="row g-4">
         @php
             $questions = [
-                'q1' => ['icon' => 'fa-user-shield', 'q' => 'Pernyataan Kejujuran Data'],
-                'q2' => ['icon' => 'fa-clock', 'q' => 'Ketersediaan Full-Time'],
-                'q3' => ['icon' => 'fa-map-marked-alt', 'q' => 'Kesediaan Relokasi'],
-                'q4' => ['icon' => 'fa-car', 'q' => 'Kepemilikan Kendaraan'],
-                'q5' => ['icon' => 'fa-money-bill-wave', 'q' => 'Ekspektasi Gaji Bulanan'],
-                'q15' => ['icon' => 'fa-calendar-check', 'q' => 'Tanggal Mulai Bergabung'],
-                'q6' => ['icon' => 'fa-tools', 'q' => 'Rating Skill Teknis'],
-                'q7' => ['icon' => 'fa-trophy', 'q' => 'Pencapaian Terbesar'],
-                'q13' => ['icon' => 'fa-bullseye', 'q' => 'Motivasi Melamar'],
-                'q14' => ['icon' => 'fa-rocket', 'q' => 'Visi Karier 3-5 Tahun']
+                'q1'  => ['icon' => 'fa-user-shield',     'q' => 'Pernyataan Kejujuran Data'],
+                'q2'  => ['icon' => 'fa-clock',           'q' => 'Ketersediaan Full-Time'],
+                'q3'  => ['icon' => 'fa-map-marked-alt',  'q' => 'Kesediaan Relokasi'],
+                'q4'  => ['icon' => 'fa-car',             'q' => 'Kepemilikan Kendaraan'],
+                'q5'  => ['icon' => 'fa-money-bill-wave', 'q' => 'Ekspektasi Gaji Bulanan'],
+                'q15' => ['icon' => 'fa-calendar-check',  'q' => 'Tanggal Mulai Bergabung'],
+                'q6'  => ['icon' => 'fa-tools',           'q' => 'Rating Skill Teknis'],
+                'q7'  => ['icon' => 'fa-trophy',          'q' => 'Pencapaian Terbesar'],
+                'q8'  => ['icon' => 'fa-star',            'q' => 'Keahlian Spesifik Utama'],
+                'q9'  => ['icon' => 'fa-users',           'q' => 'Preferensi Gaya Kerja'],
+                'q10' => ['icon' => 'fa-building',        'q' => 'Budaya Kerja Memotivasi'],
+                'q11' => ['icon' => 'fa-comments',        'q' => 'Sikap Terhadap Kritik'],
+                'q12' => ['icon' => 'fa-handshake',       'q' => 'Penanganan Perbedaan Pendapat'],
+                'q13' => ['icon' => 'fa-bullseye',        'q' => 'Motivasi Melamar'],
+                'q14' => ['icon' => 'fa-rocket',          'q' => 'Visi Karier 1-3 Tahun']
             ];
         @endphp
 
         @foreach($questions as $key => $data)
             @if(isset($application->answers[$key]))
-                <div class="{{ in_array($key, ['q7','q13','q14']) ? 'col-12' : 'col-md-6' }}">
+                <div class="{{ in_array($key, ['q7','q8','q10','q11','q12','q13','q14']) ? 'col-12' : 'col-md-6' }}">
                     <div class="card border-0 shadow-sm h-100" style="border-radius: 20px; background: #f8fafc; border: 1px solid #e2e8f0 !important;">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center mb-3">
@@ -313,7 +326,9 @@
                                 <h5 class="fw-bold mb-1">Executive Summary Kraepelin</h5>
                                 <p class="small text-muted mb-0">Laporan komprehensif performa kognitif, stabilitas emosi, dan akurasi.</p>
                             </div>
-                            <a href="{{ route('company.applications.kraepelin-pdf', $application->id) }}" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" target="_blank">
+                            <a href="{{ route('company.applications.kraepelin-pdf', $application->id) }}" 
+                               onclick="openPdfPreviewModal('{{ route('company.applications.kraepelin-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.kraepelin-pdf', $application->id) }}', 'Pratinjau Kraepelin Assessment'); return false;" 
+                               class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
                                 <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
                             </a>
                         </div>
@@ -583,6 +598,11 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                                 <h5 class="fw-bold mb-1">Evaluasi Psikologi DISC</h5>
                                 <p class="small text-muted mb-0">Pemetaan kecenderungan perilaku, gaya komunikasi, dan adaptasi lingkungan kerja.</p>
                             </div>
+                            <a href="{{ route('company.applications.disc-pdf', $application->id) }}" 
+                               onclick="openPdfPreviewModal('{{ route('company.applications.disc-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.disc-pdf', $application->id) }}', 'Pratinjau Evaluasi Perilaku DISC'); return false;" 
+                               class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">
+                                <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
+                            </a>
                         </div>
 
                         {{-- KESIMPULAN KEPRIBADIAN (AI ANALYSIS) --}}
@@ -786,9 +806,16 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                             }
                         @endphp
 
-                        <div class="mb-4 border-bottom pb-3">
-                            <h5 class="fw-bold mb-1">Management Style Diagnostic Test (MSDT)</h5>
-                            <p class="small text-muted mb-0">Menilai gaya kepemimpinan, orientasi tugas vs relasi, dan efektivitas situasional.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                            <div>
+                                <h5 class="fw-bold mb-1">Management Style Diagnostic Test (MSDT)</h5>
+                                <p class="small text-muted mb-0">Menilai gaya kepemimpinan, orientasi tugas vs relasi, dan efektivitas situasional.</p>
+                            </div>
+                            <a href="{{ route('company.applications.msdt-pdf', $application->id) }}" 
+                               onclick="openPdfPreviewModal('{{ route('company.applications.msdt-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.msdt-pdf', $application->id) }}', 'Pratinjau Laporan MSDT Kepemimpinan'); return false;" 
+                               class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                                <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
+                            </a>
                         </div>
 
                         {{-- BANNER KESIMPULAN UTAMA --}}
@@ -948,9 +975,16 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
                             ];
                         @endphp
 
-                        <div class="mb-4 border-bottom pb-3">
-                            <h5 class="fw-bold mb-1">PAPI Kostick Analysis (Personality and Preference Inventory)</h5>
-                            <p class="small text-muted mb-0">Pemetaan komprehensif atas dinamika <span class="fw-bold text-primary">Roles</span> (Peran nyata di tempat kerja) dan <span class="fw-bold text-danger">Needs</span> (Kebutuhan psikologis internal).</p>
+                        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                            <div>
+                                <h5 class="fw-bold mb-1">PAPI Kostick Analysis (Personality and Preference Inventory)</h5>
+                                <p class="small text-muted mb-0">Pemetaan komprehensif atas dinamika <span class="fw-bold text-primary">Roles</span> (Peran nyata di tempat kerja) dan <span class="fw-bold text-danger">Needs</span> (Kebutuhan psikologis internal).</p>
+                            </div>
+                            <a href="{{ route('company.applications.papi-pdf', $application->id) }}" 
+                               onclick="openPdfPreviewModal('{{ route('company.applications.papi-pdf', [$application->id, 'stream' => 1]) }}', '{{ route('company.applications.papi-pdf', $application->id) }}', 'Pratinjau Laporan PAPI Kostick'); return false;" 
+                               class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm">
+                                <i class="fas fa-file-pdf me-2"></i> Ekspor Laporan
+                            </a>
                         </div>
 
                         <div class="row g-4">
@@ -1115,11 +1149,42 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
         interviewModal.hide();
     }
     function submitStatusUpdate(appId, status, notes = null) {
-        document.getElementById('status-spinner').classList.remove('d-none');
+        document.getElementById('status-spinner')?.classList.remove('d-none');
+        const overlay = document.getElementById('email-loading-overlay');
+        const stateProc = document.getElementById('loader-state-processing');
+        const stateSucc = document.getElementById('loader-state-success');
+
+        if (overlay) {
+            stateProc?.classList.remove('d-none');
+            stateSucc?.classList.add('d-none');
+            overlay.classList.remove('d-none');
+            overlay.style.display = 'flex';
+        }
         axios.put(`/company/applications/${appId}/status`, { status, notes })
-        .then(res => { if (res.data.success) { location.reload(); } })
-        .catch(err => { alert('Gagal!'); document.getElementById('status-selector').value = oldStatus; })
-        .finally(() => document.getElementById('status-spinner').classList.add('d-none'));
+        .then(res => { 
+            if (res.data.success) { 
+                if (stateProc && stateSucc) {
+                    stateProc.classList.add('d-none');
+                    stateSucc.classList.remove('d-none');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1200);
+                } else {
+                    location.reload();
+                }
+            } 
+        })
+        .catch(err => { 
+            alert('Gagal memperbarui status: ' + (err.response?.data?.message || 'Terjadi kesalahan')); 
+            if (typeof oldStatus !== 'undefined' && document.getElementById('status-selector')) {
+                document.getElementById('status-selector').value = oldStatus; 
+            }
+            if (overlay) {
+                overlay.classList.add('d-none');
+                overlay.style.display = 'none';
+            }
+        })
+        .finally(() => document.getElementById('status-spinner')?.classList.add('d-none'));
     }
 
     // --- INISIALISASI SEMUA CHART PSIKOTES ---
@@ -1244,5 +1309,129 @@ $discData = is_array($discResult->final_score) ? $discResult->final_score : [];
     }
     @endif
 </script>
+
+<!-- MODAL POPUP PREVIEW PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 92vw; height: 90vh;">
+        <div class="modal-content h-100 border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header bg-dark text-white p-3">
+                <h5 class="modal-title fw-bold small text-uppercase" id="pdfPreviewModalLabel">
+                    <i class="fas fa-file-pdf text-danger me-2"></i> Pratinjau Laporan Hasil Tes Psikotes
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
+                <iframe id="pdfPreviewIframe" src="about:blank" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+            <div class="modal-footer bg-white p-3 d-flex justify-content-between">
+                <a id="btnOpenNewTab" href="#" target="_blank" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                    <i class="fas fa-external-link-alt me-1"></i> Buka di Tab Baru
+                </a>
+                <div>
+                    <button type="button" class="btn btn-secondary rounded-pill px-4 me-2" data-bs-dismiss="modal">Tutup</button>
+                    <a id="btnDownloadPdf" href="#" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="fas fa-download me-1"></i> Unduh File PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPdfPreviewModal(streamUrl, downloadUrl, title) {
+    document.getElementById('pdfPreviewModalLabel').innerHTML = '<i class="fas fa-file-pdf text-danger me-2"></i> ' + (title || 'Pratinjau Laporan Hasil Tes Psikotes');
+    document.getElementById('pdfPreviewIframe').src = streamUrl;
+    document.getElementById('btnOpenNewTab').href = streamUrl;
+    document.getElementById('btnDownloadPdf').href = downloadUrl;
+    
+    var myModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+    myModal.show();
+}
+</script>
+
+<style>
+    .pulse-loader-dots {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 60px;
+    }
+    .pulse-loader-dots .dot {
+        width: 18px;
+        height: 18px;
+        background-color: #3b82f6;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse-bounce 1.4s infinite ease-in-out both;
+        box-shadow: 0 0 14px rgba(59, 130, 246, 0.7);
+    }
+    .pulse-loader-dots .dot-1 { animation-delay: -0.32s; background-color: #2563eb; }
+    .pulse-loader-dots .dot-2 { animation-delay: -0.16s; background-color: #3b82f6; }
+    .pulse-loader-dots .dot-3 { animation-delay: 0s; background-color: #60a5fa; }
+
+    @keyframes pulse-bounce {
+        0%, 80%, 100% { 
+            transform: scale(0.5);
+            opacity: 0.3;
+        } 
+        40% { 
+            transform: scale(1.3);
+            opacity: 1;
+        }
+    }
+
+    .checkmark-circle-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #ffffff;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45);
+        animation: pop-checkmark 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes pop-checkmark {
+        0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+        70% { transform: scale(1.15) rotate(10deg); opacity: 1; }
+        100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+</style>
+
+{{-- MODAL / OVERLAY LOADING PENGIRIMAN EMAIL KREATIF --}}
+<div id="email-loading-overlay" class="d-none" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.88); z-index: 99999; backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; color: #fff; text-align: center;">
+    <div style="background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255,255,255,0.18); border-radius: 24px; padding: 40px 35px; max-width: 450px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);">
+        
+        {{-- State 1: Animated Bouncing Dots --}}
+        <div id="loader-state-processing">
+            <div class="d-flex justify-content-center align-items-center mb-4">
+                <div class="pulse-loader-dots">
+                    <span class="dot dot-1"></span>
+                    <span class="dot dot-2"></span>
+                    <span class="dot dot-3"></span>
+                </div>
+            </div>
+            <h5 class="fw-bold mb-2 text-white" id="loading-overlay-title">Memperbarui Status & Mengirimkan Email...</h5>
+            <p class="text-white-50 small mb-0" id="loading-overlay-desc">Mohon tunggu sebentar, status lamaran sedang diperbarui dan email pemberitahuan sedang dikirimkan ke pelamar.</p>
+        </div>
+
+        {{-- State 2: Checkmark Icon Success --}}
+        <div id="loader-state-success" class="d-none">
+            <div class="d-flex justify-content-center mb-3">
+                <div class="checkmark-circle-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+            <h4 class="fw-bold text-white mb-2">Status Perubahan Terkirim!</h4>
+            <p class="text-white-50 small mb-0">Email pemberitahuan berhasil dikirimkan ke pelamar.</p>
+        </div>
+
+    </div>
+</div>
+
 @endpush
 @endsection

@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\Job;
 use App\Models\User;
+use App\Mail\ApplicationStatusUpdatedMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
@@ -16,12 +19,12 @@ class ApplicationController extends Controller
      * Master status yang diizinkan dalam sistem.
      * Termasuk status untuk integrasi Tes Kraepelin.
      */
-    protected $allowedStatuses = 'pending,reviewed,shortlisted,test_invited,test_in_progress,interview,rejected,accepted';
+    protected $allowedStatuses = 'pending,reviewed,shortlisted,test_invited,test_in_progress,test_completed,interview,rejected,accepted';
 
     public function index(Request $request)
     {
-        // Eager load relasi. withTrashed() digunakan pada job agar data lamaran 
-        // tetap bisa diakses meskipun lowongannya sudah dihapus (soft delete).
+        $jobs = Job::withTrashed()->latest()->get();
+
         $query = JobApplication::with([
             'job' => function($q) { $q->withTrashed(); },
             'job.company', 
@@ -30,12 +33,10 @@ class ApplicationController extends Controller
             'psychologicalResults'
         ]);
 
-        // Filter berdasarkan lowongan spesifik
         if ($request->filled('job_id')) {
             $query->where('job_id', $request->job_id);
         }
 
-        // Fitur Pencarian (Nama Pelamar atau Judul Posisi)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -49,7 +50,7 @@ class ApplicationController extends Controller
 
         $applications = $query->latest()->paginate(15)->appends($request->query());
             
-        return view('admin.applications.index', compact('applications'));
+        return view('admin.applications.index', compact('applications', 'jobs'));
     }
 
     public function create()
@@ -124,6 +125,13 @@ class ApplicationController extends Controller
             'notes'        => $request->notes,
         ]);
 
+        try {
+            $application->load(['user', 'job.company']);
+            Mail::to($application->user->email)->send(new ApplicationStatusUpdatedMail($application, $request->notes));
+        } catch (\Exception $e) {
+            Log::warning('Gagal mengirim email status lamaran admin: ' . $e->getMessage());
+        }
+
         return redirect()->route('admin.applications.index')->with('success', 'Informasi lamaran telah diperbarui.');
     }
 
@@ -153,6 +161,13 @@ class ApplicationController extends Controller
         ]);
 
         $application->update(['status' => $request->status]);
+
+        try {
+            $application->load(['user', 'job.company']);
+            Mail::to($application->user->email)->send(new ApplicationStatusUpdatedMail($application, $application->notes));
+        } catch (\Exception $e) {
+            Log::warning('Gagal mengirim email update status admin: ' . $e->getMessage());
+        }
 
         $statusText = match($request->status) {
             'pending'          => 'Menunggu',

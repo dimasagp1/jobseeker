@@ -35,9 +35,9 @@
                         </div>
                         <div class="col-6 col-md-3 text-center">
                             <small class="text-muted d-block text-uppercase fw-bold fs-9 tracking-wider">Sisa Waktu</small>
-                            <span class="fw-bold text-danger small">
-                                {{ $job->deadline ? $job->deadline->diffInDays(now()) . ' Hari' : 'N/A' }}
-                            </span>
+                            <div class="small mt-1">
+                                {!! $job->remaining_time_html !!}
+                            </div>
                         </div>
                     </div>
 

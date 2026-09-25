@@ -40,13 +40,10 @@ class Company extends Model
         'industry',
         'company_size',
         'founded_date',
+        'pdf_header_title',
+        'pdf_header_subtitle',
         'is_verified',
         'is_active',
-        'user_id',
-        'company_name',
-        'company_email',
-        'company_description',
-        'company_logo',
     ];
 
     protected $casts = [

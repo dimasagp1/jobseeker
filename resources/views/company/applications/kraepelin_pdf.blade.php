@@ -135,9 +135,27 @@
     <div class="watermark">CONFIDENTIAL</div>
 
     <div class="header">
-        <p class="company-name">HerbaTech <span style="font-size: 10px; font-weight: normal; color: #94a3b8;">| Human Resources Dept.</span></p>
-        <p class="report-type">Executive Summary - Kraepelin Assessment</p>
         <div class="confidential">DOKUMEN RAHASIA</div>
+        <table style="width: 100%; border: none;">
+            <tr>
+                @if(isset($logoBase64) && $logoBase64)
+                    <td style="width: 50px; vertical-align: middle; border: none; padding: 0 10px 0 0;">
+                        <img src="{{ $logoBase64 }}" style="max-height: 38px; max-width: 120px; object-fit: contain;">
+                    </td>
+                @endif
+                <td style="vertical-align: middle; border: none; padding: 0;">
+                    <p class="company-name" style="margin: 0;">
+                        {{ $siteSettings->pdf_header_title ?? ($siteSettings->company_name ?? 'HerbaTech') }}
+                        @if(!isset($siteSettings->pdf_header_title))
+                            <span style="font-size: 10px; font-weight: normal; color: #94a3b8;">| Human Resources Dept.</span>
+                        @endif
+                    </p>
+                    <p class="report-type" style="margin: 3px 0 0 0;">
+                        {{ $siteSettings->pdf_header_subtitle ?? 'Executive Summary - Kraepelin Assessment' }}
+                    </p>
+                </td>
+            </tr>
+        </table>
     </div>
 
     {{-- INFORMASI KANDIDAT --}}

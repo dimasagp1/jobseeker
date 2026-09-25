@@ -56,8 +56,8 @@
             </tbody>
         </table>
     </div>
-    <div class="card-footer clearfix">
-        {{ $companies->links() }}
+    <div class="card-footer clearfix d-flex justify-content-center">
+        {{ $companies->onEachSide(1)->links('pagination::bootstrap-5') }}
     </div>
 </div>
 @endsection

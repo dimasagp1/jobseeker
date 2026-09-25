@@ -146,15 +146,116 @@ class Job extends Model
         ][$this->work_setting] ?? 'On-site';
     }
 
+    /**
+     * Label pengalaman yang mudah dibaca pengguna (Indonesian formatted).
+     */
+    public function getFormattedExperienceLevelAttribute(): string
+    {
+        $value = strtolower((string)$this->experience_level);
+
+        $map = [
+            'entry_level'        => 'Fresh Graduate / Entry Level',
+            'entry'              => 'Fresh Graduate / Entry Level',
+            'fresh_graduate'     => 'Fresh Graduate',
+            '1_3_years'          => '1 - 3 Tahun',
+            '1_3'                => '1 - 3 Tahun',
+            '3_5_years'          => '3 - 5 Tahun',
+            '3_5'                => '3 - 5 Tahun',
+            'more_than_5_years'  => 'Lebih dari 5 Tahun',
+            '5_plus_years'       => 'Diatas 5 Tahun',
+            'junior'             => 'Junior (1 - 2 Tahun)',
+            'mid'                => 'Mid Level (2 - 4 Tahun)',
+            'senior'             => 'Senior (Diatas 5 Tahun)',
+            'lead'               => 'Lead Level',
+            'manager'            => 'Managerial',
+        ];
+
+        if (isset($map[$value])) {
+            return $map[$value];
+        }
+
+        if (empty($value)) {
+            return 'Semua Tingkat';
+        }
+
+        return ucwords(str_replace(['_', '-'], ' ', $value));
+    }
+
+    /**
+     * Total pelamar akurat (dengan fallback ke database count jika withCount tidak dipakai).
+     */
+    public function getApplicationsCountAttribute($value): int
+    {
+        if ($value !== null) {
+            return (int) $value;
+        }
+        
+        if ($this->relationLoaded('applications')) {
+            return $this->applications->count();
+        }
+
+        return $this->applications()->count();
+    }
+
     public function isActive(): bool
     {
-        return $this->status === 'published' &&
-            (!$this->deadline || $this->deadline->isFuture() || $this->deadline->isToday());
+        return $this->status === 'published' && !$this->isExpired();
     }
 
     public function isExpired(): bool
     {
-        return $this->deadline && $this->deadline->isPast() && !$this->deadline->isToday();
+        if (!$this->deadline) {
+            return false;
+        }
+        return Carbon::today()->gt(Carbon::parse($this->deadline)->startOfDay());
+    }
+
+    /**
+     * Label sisa waktu / status kedaluwarsa lowongan.
+     */
+    public function getRemainingTimeLabelAttribute(): string
+    {
+        if (!$this->deadline) {
+            return 'Tanpa Batas';
+        }
+
+        $today = Carbon::today();
+        $deadlineDate = Carbon::parse($this->deadline)->startOfDay();
+
+        if ($today->gt($deadlineDate)) {
+            return 'Kedaluwarsa';
+        }
+
+        if ($today->eq($deadlineDate)) {
+            return 'Hari Ini (Terakhir)';
+        }
+
+        $daysLeft = (int) $today->diffInDays($deadlineDate);
+        return $daysLeft . ' Hari';
+    }
+
+    /**
+     * HTML formatted badge sisa waktu / kedaluwarsa lowongan.
+     */
+    public function getRemainingTimeHtmlAttribute(): string
+    {
+        if (!$this->deadline) {
+            return '<span class="text-muted fw-bold">Tanpa Batas</span>';
+        }
+
+        $today = Carbon::today();
+        $deadlineDate = Carbon::parse($this->deadline)->startOfDay();
+
+        if ($today->gt($deadlineDate)) {
+            return '<span class="text-danger fw-bold">Kedaluwarsa</span>';
+        }
+
+        if ($today->eq($deadlineDate)) {
+            return '<span class="text-warning fw-bold">Hari Ini (Terakhir)</span>';
+        }
+
+        $daysLeft = (int) $today->diffInDays($deadlineDate);
+        return '<span class="text-success fw-bold">' . $daysLeft . ' Hari</span>';
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Pagination\Paginator;
 use App\Models\Company;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        Paginator::useBootstrapFive();
+
         try {
             // Ambil data pertama Company sebagai pengaturan global dan Cache selama 24 jam (1440 menit)
             // agar tidak query ke database setiap kali buka halaman

@@ -109,7 +109,11 @@
                         </td>
                         <td class="text-center">
                             @if($job->status === 'published')
-                                <span class="status-pill bg-soft-success"><i class="fas fa-globe mr-1"></i> Tayang</span>
+                                @if($job->isExpired())
+                                    <span class="status-pill bg-soft-danger"><i class="fas fa-exclamation-circle mr-1"></i> Kedaluwarsa</span>
+                                @else
+                                    <span class="status-pill bg-soft-success"><i class="fas fa-globe mr-1"></i> Tayang</span>
+                                @endif
                             @elseif($job->status === 'closed')
                                 <span class="status-pill bg-soft-danger"><i class="fas fa-lock mr-1"></i> Ditutup</span>
                             @else
@@ -160,7 +164,7 @@
         @if($jobs->hasPages())
         <div class="card-footer bg-white border-top-0 pt-3 pb-3" style="border-radius: 0 0 12px 12px;">
             <div class="d-flex justify-content-center">
-                {{ $jobs->links() }}
+                {{ $jobs->onEachSide(1)->links('pagination::bootstrap-5') }}
             </div>
         </div>
         @endif
