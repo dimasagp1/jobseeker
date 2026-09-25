@@ -127,7 +127,7 @@
                         'icon' => 'fa-calculator',
                         'color' => 'primary',
                         'route' => ($application->status === 'test_invited' ? 'seeker.kraepelin.instructions' : 'seeker.kraepelin.start'),
-                        'is_done' => $application->kraepelinTest()->whereNotNull('completed_at')->exists()
+                        'is_done' => ($application->kraepelinTest && $application->kraepelinTest->completed_at !== null) || $application->kraepelinTest()->whereNotNull('completed_at')->exists()
                         ],
                         [
                         'id' => 'disc',
@@ -136,7 +136,7 @@
                         'icon' => 'fa-shapes',
                         'color' => 'success',
                         'route' => 'seeker.disc.instructions',
-                        'is_done' => $results->where('test_type', 'disc')->where('status', 'completed')->isNotEmpty()
+                        'is_done' => $results->filter(fn($r) => strtolower(trim($r->test_type)) === 'disc' && strtolower(trim($r->status)) === 'completed')->isNotEmpty()
                         ],
                         [
                         'id' => 'msdt',
@@ -145,7 +145,7 @@
                         'icon' => 'fa-users-cog',
                         'color' => 'danger',
                         'route' => 'seeker.msdt.instructions',
-                        'is_done' => $results->where('test_type', 'msdt')->where('status', 'completed')->isNotEmpty()
+                        'is_done' => $results->filter(fn($r) => strtolower(trim($r->test_type)) === 'msdt' && strtolower(trim($r->status)) === 'completed')->isNotEmpty()
                         ],
                         [
                         'id' => 'papi',
@@ -154,7 +154,7 @@
                         'icon' => 'fa-clipboard-check',
                         'color' => 'info',
                         'route' => 'seeker.papi.instructions',
-                        'is_done' => $results->where('test_type', 'papi')->where('status', 'completed')->isNotEmpty()
+                        'is_done' => $results->filter(fn($r) => strtolower(trim($r->test_type)) === 'papi' && strtolower(trim($r->status)) === 'completed')->isNotEmpty()
                         ]
                         ];
                         @endphp

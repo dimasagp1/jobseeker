@@ -25,7 +25,9 @@ class ApplicationController extends Controller
         $query = JobApplication::with([
             'job' => function($q) { $q->withTrashed(); },
             'job.company', 
-            'user'
+            'user',
+            'kraepelinTest',
+            'psychologicalResults'
         ]);
 
         // Filter berdasarkan lowongan spesifik

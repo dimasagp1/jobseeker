@@ -154,21 +154,7 @@ class DiscController extends Controller
 
     private function checkAndUpgradeStatus($application)
     {
-        $application->refresh();
-
-        $kraepelinDone = $application->kraepelinTest()->whereNotNull('completed_at')->exists();
-
-        // Ambil semua hasil tes psikotes
-        $results = $application->psychologicalResults()->where('status', 'completed')->pluck('test_type')->toArray();
-
-        // Syarat: Kraepelin + MSDT + PAPI + DISC harus Selesai
-        $othersDone = in_array('msdt', $results) && in_array('papi', $results) && in_array('disc', $results);
-
-        if ($kraepelinDone && $othersDone) {
-            $application->update(['status' => JobApplication::STATUS_TEST_COMPLETED]);
-        } else {
-            $application->update(['status' => JobApplication::STATUS_TEST_IN_PROGRESS]);
-        }
+        $application->checkAndUpdateTestStatus();
     }
 
     public function showCompleted(JobApplication $application)

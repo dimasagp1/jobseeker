@@ -53,28 +53,121 @@ class JobApplication extends Model
     }
 
     /**
-     * Mengecek apakah pelamar sudah menyelesaikan SEMUA tes yang diwajibkan
+     * Mengecek apakah pelamar sudah menyelesaikan SEMUA tes yang diwajibkan oleh lowongan
      */
-    public function allTestsCompleted()
+    public function allTestsCompleted(): bool
     {
+        $requiredTests = $this->job?->required_tests ?? ['kraepelin', 'disc', 'msdt', 'papi'];
+
+        if (empty($requiredTests) || !is_array($requiredTests)) {
+            return false;
+        }
+
+        // Cek Kraepelin jika diwajibkan
+        if (in_array('kraepelin', $requiredTests)) {
+            $kraepelinDone = $this->relationLoaded('kraepelinTest')
+                ? ($this->kraepelinTest && $this->kraepelinTest->completed_at !== null)
+                : $this->kraepelinTest()->whereNotNull('completed_at')->exists();
+
+            if (!$kraepelinDone) {
+                return false;
+            }
+        }
+
+        // Cek tes psikologi lainnya (DISC, MSDT, PAPI)
+        $completedTypes = $this->relationLoaded('psychologicalResults')
+            ? $this->psychologicalResults->where('status', 'completed')->pluck('test_type')->map(fn($t) => strtolower(trim($t)))->toArray()
+            : $this->psychologicalResults()->where('status', 'completed')->pluck('test_type')->map(fn($t) => strtolower(trim($t)))->toArray();
+
+        foreach ($requiredTests as $test) {
+            $test = strtolower(trim($test));
+            if ($test === 'kraepelin') continue;
+
+            if (!in_array($test, $completedTypes)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Otomatis sinkronkan dan update status lamaran berdasarkan progres pengerjaan tes
+     */
+    public function checkAndUpdateTestStatus(): bool
+    {
+        $this->refresh();
+
+        if ($this->allTestsCompleted()) {
+            $this->update(['status' => self::STATUS_TEST_COMPLETED]);
+            return true;
+        } else {
+            // Jika belum semua selesai, tapi sudah mulai mengerjakan salah satu tes
+            $hasAnyProgress = $this->kraepelinTest()->exists() || $this->psychologicalResults()->exists();
+            if ($hasAnyProgress && !in_array($this->status, [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_INTERVIEW])) {
+                $this->update(['status' => self::STATUS_TEST_IN_PROGRESS]);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Mendapatkan rincian progres pengerjaan tes untuk tampilan UI
+     */
+    public function getTestProgress(): array
+    {
+        $requiredTests = $this->job?->required_tests ?? ['kraepelin', 'disc', 'msdt', 'papi'];
+        if (!is_array($requiredTests)) {
+            $requiredTests = ['kraepelin', 'disc', 'msdt', 'papi'];
+        }
+
+        $totalRequired = count($requiredTests);
+        if ($totalRequired === 0) {
+            return [
+                'completed' => 0,
+                'total' => 0,
+                'is_done' => true,
+                'percent' => 100,
+                'has_tests' => false,
+            ];
+        }
+
+        $completedCount = 0;
+
         // Cek Kraepelin
-        $kraepelin = $this->kraepelinTest()->whereNotNull('completed_at')->exists();
+        if (in_array('kraepelin', $requiredTests)) {
+            $kraepelinDone = $this->relationLoaded('kraepelinTest')
+                ? ($this->kraepelinTest && $this->kraepelinTest->completed_at !== null)
+                : $this->kraepelinTest()->whereNotNull('completed_at')->exists();
+            if ($kraepelinDone) {
+                $completedCount++;
+            }
+        }
 
-        // Cek MSDT, PAPI, DISC
-        // PERBAIKAN: Gunakan strtolower agar tidak terjadi kegagalan pengecekan karena huruf kapital
-        $completedTypes = $this->psychologicalResults()
-            ->where('status', 'completed')
-            ->pluck('test_type')
-            ->map(function ($type) {
-                return strtolower($type);
-            })
-            ->toArray();
+        // Cek Tes Psikologi (DISC, MSDT, PAPI)
+        $completedPsyTypes = $this->relationLoaded('psychologicalResults')
+            ? $this->psychologicalResults->where('status', 'completed')->pluck('test_type')->map(fn($t) => strtolower(trim($t)))->toArray()
+            : $this->psychologicalResults()->where('status', 'completed')->pluck('test_type')->map(fn($t) => strtolower(trim($t)))->toArray();
 
-        $psikotesDone = in_array('msdt', $completedTypes) &&
-            in_array('papi', $completedTypes) &&
-            in_array('disc', $completedTypes);
+        foreach ($requiredTests as $test) {
+            $test = strtolower(trim($test));
+            if ($test === 'kraepelin') continue;
 
-        return $kraepelin && $psikotesDone;
+            if (in_array($test, $completedPsyTypes)) {
+                $completedCount++;
+            }
+        }
+
+        $isDone = ($completedCount >= $totalRequired);
+        $percent = $totalRequired > 0 ? round(($completedCount / $totalRequired) * 100) : 100;
+
+        return [
+            'completed' => $completedCount,
+            'total' => $totalRequired,
+            'is_done' => $isDone,
+            'percent' => $percent,
+            'has_tests' => true,
+        ];
     }
     
     // --- RELATIONSHIPS ---

@@ -125,14 +125,24 @@
                             @php
                                 $statusClass = match($application->status) {
                                     'pending' => 'warning',
+                                    'reviewed' => 'secondary',
                                     'shortlisted' => 'info',
+                                    'test_invited' => 'primary',
+                                    'test_in_progress' => 'warning',
+                                    'test_completed' => 'success',
+                                    'interview' => 'dark',
                                     'accepted' => 'success',
                                     'rejected' => 'danger',
                                     default => 'secondary'
                                 };
                                 $statusText = match($application->status) {
                                     'pending' => 'Menunggu',
+                                    'reviewed' => 'Sedang Ditinjau',
                                     'shortlisted' => 'Dipertimbangkan',
+                                    'test_invited' => 'Undangan Tes',
+                                    'test_in_progress' => 'Mengerjakan Tes',
+                                    'test_completed' => 'Tes Selesai',
+                                    'interview' => 'Wawancara',
                                     'accepted' => 'Diterima',
                                     'rejected' => 'Ditolak',
                                     default => ucfirst($application->status)
@@ -143,8 +153,23 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            @if($application->kraepelin_id)
-                                <span class="badge bg-success text-white" style="border-radius: 8px;"><i class="fas fa-check-circle mr-1"></i> Selesai</span>
+                            @php
+                                $progress = $application->getTestProgress();
+                            @endphp
+                            @if(!$progress['has_tests'])
+                                <span class="badge bg-light text-muted border" style="border-radius: 8px;">Tidak Ada Tes</span>
+                            @elseif($progress['is_done'])
+                                <span class="badge bg-success text-white shadow-sm" style="border-radius: 8px;">
+                                    <i class="fas fa-check-circle mr-1"></i> Selesai ({{ $progress['completed'] }}/{{ $progress['total'] }})
+                                </span>
+                            @elseif($progress['completed'] > 0)
+                                <span class="badge bg-info text-white shadow-sm" style="border-radius: 8px;">
+                                    <i class="fas fa-spinner mr-1"></i> {{ $progress['completed'] }}/{{ $progress['total'] }} Selesai
+                                </span>
+                            @elseif($application->status === 'test_in_progress')
+                                <span class="badge bg-warning text-dark" style="border-radius: 8px;">
+                                    <i class="fas fa-clock mr-1"></i> Sedang Mengerjakan
+                                </span>
                             @else
                                 <span class="badge bg-light text-muted border" style="border-radius: 8px;">Belum Mengerjakan</span>
                             @endif

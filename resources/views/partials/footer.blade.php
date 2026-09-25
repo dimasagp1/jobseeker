@@ -4,39 +4,39 @@
             <!-- Company Info -->
             <div class="col-lg-4 col-md-6">
                 <h5 class="fw-bold mb-3">
-                    @if(isset($company->company_logo) && $company->company_logo)
-                        <img src="{{ asset('storage/' . $company->company_logo) }}" alt="Logo" class="me-2 rounded-circle" style="width: 30px; height: 30px;">
+                    @if(isset($siteSettings->company_logo) && $siteSettings->company_logo)
+                        <img src="{{ asset('storage/' . $siteSettings->company_logo) }}" alt="Logo" class="me-2 rounded-circle" style="width: 30px; height: 30px;">
                     @else
                         <i class="fas fa-briefcase me-2 text-primary"></i>
                     @endif
-                    {{ $company->company_name ?? 'JobPortal' }}
+                    {{ $siteSettings->company_name ?? 'JobPortal' }}
                 </h5>
-                <p class="text-muted small">{{ Str::limit($company->company_description ?? 'Membangun masa depan, satu pekerjaan sekaligus.', 120) }}</p>
+                <p class="text-muted small">{{ Str::limit($siteSettings->company_description ?? 'Membangun masa depan, satu pekerjaan sekaligus.', 120) }}</p>
                 
-                @if(isset($company->company_profile_url) && $company->company_profile_url)
-                    <a href="{{ $company->company_profile_url }}" target="_blank" class="btn btn-outline-light btn-sm mt-2">
+                @if(isset($siteSettings->company_profile_url) && $siteSettings->company_profile_url)
+                    <a href="{{ $siteSettings->company_profile_url }}" target="_blank" class="btn btn-outline-light btn-sm mt-2">
                         <i class="fas fa-building me-2"></i> Profil Perusahaan
                     </a>
                 @endif
 
                 <div class="d-flex gap-3 mt-3">
-                    @if(isset($company->facebook) && $company->facebook)
-                        <a href="{{ $company->facebook }}" target="_blank" class="text-white-50 hover-text-white"><i class="fab fa-facebook fa-lg"></i></a>
+                    @if(isset($siteSettings->facebook) && $siteSettings->facebook)
+                        <a href="{{ $siteSettings->facebook }}" target="_blank" class="text-white-50 hover-text-white"><i class="fab fa-facebook fa-lg"></i></a>
                     @endif
-                    @if(isset($company->twitter) && $company->twitter)
-                        <a href="{{ $company->twitter }}" target="_blank" class="text-white-50 hover-text-white"><i class="fab fa-twitter fa-lg"></i></a>
+                    @if(isset($siteSettings->twitter) && $siteSettings->twitter)
+                        <a href="{{ $siteSettings->twitter }}" target="_blank" class="text-white-50 hover-text-white"><i class="fab fa-twitter fa-lg"></i></a>
                     @endif
-                    @if(isset($company->linkedin) && $company->linkedin)
-                        <a href="{{ $company->linkedin }}" target="_blank" class="text-white-50 hover-text-white"><i class="fab fa-linkedin fa-lg"></i></a>
+                    @if(isset($siteSettings->linkedin) && $siteSettings->linkedin)
+                        <a href="{{ $siteSettings->linkedin }}" target="_blank" class="text-white-50 hover-text-white"><i class="fab fa-linkedin fa-lg"></i></a>
                     @endif
-                    @if(isset($company->instagram) && $company->instagram)
-                        <a href="{{ $company->instagram }}" target="_blank" class="text-white-50 hover-text-white"><i class="fab fa-instagram fa-lg"></i></a>
+                    @if(isset($siteSettings->instagram) && $siteSettings->instagram)
+                        <a href="{{ $siteSettings->instagram }}" target="_blank" class="text-white-50 hover-text-white"><i class="fab fa-instagram fa-lg"></i></a>
                     @endif
                 </div>
             </div>
             
             <!-- Quick Links -->
-            <div class="col-lg-2 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <h6 class="text-uppercase mb-3 fw-bold text-primary">Tautan Cepat</h6>
                 <ul class="list-unstyled small text-muted">
                     <li class="mb-2"><a href="{{ route('public.jobs.index') }}" class="text-decoration-none text-muted hover-text-white">Cari Lowongan</a></li>
@@ -46,15 +46,6 @@
                         <li class="mb-2"><a href="{{ route('login') }}" class="text-decoration-none text-muted hover-text-white">Masuk</a></li>
                         <li class="mb-2"><a href="{{ route('register') }}" class="text-decoration-none text-muted hover-text-white">Daftar</a></li>
                     @endauth
-                </ul>
-            </div>
-            
-            <!-- For Employers -->
-            <div class="col-lg-2 col-md-6">
-                <h6 class="text-uppercase mb-3 fw-bold text-primary">Untuk Perusahaan</h6>
-                <ul class="list-unstyled small text-muted">
-                    <li class="mb-2"><a href="{{ route('register') }}" class="text-decoration-none text-muted hover-text-white">Pasang Lowongan</a></li>
-                    <li class="mb-2"><a href="{{ route('login') }}" class="text-decoration-none text-muted hover-text-white">Login Perusahaan</a></li>
                 </ul>
             </div>
             
@@ -73,7 +64,7 @@
         
         <div class="row">
             <div class="col-md-6 text-center text-md-start small text-muted">
-                &copy; {{ date('Y') }} {{ $company->company_name ?? 'JobPortal' }}. Hak Cipta Dilindungi.
+                &copy; {{ date('Y') }} {{ $siteSettings->company_name ?? 'JobPortal' }}. Hak Cipta Dilindungi.
             </div>
             <div class="col-md-6 text-center text-md-end small">
                 <a href="#" class="text-muted text-decoration-none hover-text-white me-3">Kebijakan Privasi</a>

@@ -20,7 +20,7 @@
         return strtolower(trim($q->test_type)) === 'papi' && strtolower(trim($q->status)) === 'completed';
     })->first();
     
-    $hasKraepelin = $application->kraepelin_id || $application->kraepelinTest;
+    $hasKraepelin = $application->kraepelinTest && $application->kraepelinTest->completed_at !== null;
     $kraepelinTest = $application->kraepelinTest;
 @endphp
 

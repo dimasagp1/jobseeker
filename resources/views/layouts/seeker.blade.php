@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $siteSettings?->company_name ?? 'HerbaTech' }} - Career Portal</title>
 
+    @if(isset($siteSettings) && $siteSettings->favicon)
+        <link rel="icon" href="{{ asset('storage/' . $siteSettings->favicon) }}" type="image/x-icon"/>
+    @else
+        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon"/>
+    @endif
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @if(isset($siteSettings) && $siteSettings->favicon)
